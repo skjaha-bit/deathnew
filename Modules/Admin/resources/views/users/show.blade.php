@@ -43,16 +43,37 @@
         <div class="col-md-6">
             <div class="card p-3 mb-3">
                 <h6 class="mb-3">Status</h6>
-                <form method="POST" action="{{ route('admin.users.update-status', $user) }}" class="d-flex gap-2">
+                <form method="POST" action="{{ route('admin.users.update-status', $user) }}" id="statusForm">
                     @csrf @method('PUT')
-                    <select name="status" class="form-select">
-                        @foreach (['active', 'suspended', 'deceased'] as $status)
-                            <option value="{{ $status }}" @selected($user->status === $status)>{{ ucfirst($status) }}</option>
-                        @endforeach
-                    </select>
-                    <button class="btn btn-primary text-nowrap">Update</button>
+                    <div class="d-flex gap-2 mb-2">
+                        <select name="status" class="form-select" id="statusSelect">
+                            @foreach (['active', 'suspended', 'deceased'] as $status)
+                                <option value="{{ $status }}" @selected($user->status === $status)>{{ ucfirst($status) }}</option>
+                            @endforeach
+                        </select>
+                        <button class="btn btn-primary text-nowrap">Update</button>
+                    </div>
+                    <div id="deceasedReasonField" class="d-none">
+                        <label class="form-label small text-muted">Reason (required to mark as deceased)</label>
+                        <textarea name="reason" class="form-control form-control-sm" rows="2">{{ old('reason') }}</textarea>
+                    </div>
+                    @if ($user->status === 'deceased')
+                        <p class="text-muted small mt-2 mb-0">
+                            Marked deceased {{ $user->deceased_at?->format('Y-m-d H:i') }}
+                            @if ($user->deceased_confirmed_by) by admin #{{ $user->deceased_confirmed_by }} @endif
+                            ({{ $user->deceased_source }}).
+                        </p>
+                    @endif
                 </form>
             </div>
+
+            @if ($user->status === 'deceased' && \Illuminate\Support\Facades\Route::has('admin.emergency-access.index'))
+                <div class="card p-3 mb-3 border-warning">
+                    <h6 class="mb-2"><i class="bi bi-shield-lock-fill me-1"></i>Emergency Access</h6>
+                    <p class="text-muted small mb-2">This customer is marked deceased. Request access to their full vault (a different admin must approve before it unlocks).</p>
+                    <a href="{{ route('admin.emergency-access.index') }}?user={{ $user->id }}" class="btn btn-sm btn-outline-warning">Request Emergency Access</a>
+                </div>
+            @endif
 
             <div class="card p-3 mb-3">
                 <h6 class="mb-3">Subscription &amp; billing</h6>
@@ -104,3 +125,16 @@
         <button class="btn btn-outline-danger btn-sm">Delete User</button>
     </form>
 @endsection
+
+@push('scripts')
+<script>
+(function () {
+    const select = document.getElementById('statusSelect');
+    const field = document.getElementById('deceasedReasonField');
+    if (!select || !field) return;
+    function sync() { field.classList.toggle('d-none', select.value !== 'deceased'); }
+    select.addEventListener('change', sync);
+    sync();
+})();
+</script>
+@endpush

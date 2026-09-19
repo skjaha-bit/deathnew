@@ -14,5 +14,6 @@
     "Notification": true,
     "Subscription": true,
     "UserSubscriptions": true,
-    "Admin": true
+    "Admin": true,
+    "EmergencyAccess": true
 }

@@ -42,9 +42,27 @@ class UserController extends Controller
     {
         $data = $request->validate([
             'status' => ['required', 'in:active,suspended,deceased'],
+            'reason' => ['required_if:status,deceased', 'nullable', 'string', 'max:1000'],
         ]);
 
-        $user->update($data);
+        if ($data['status'] === User::STATUS_DECEASED && $user->status !== User::STATUS_DECEASED) {
+            abort_unless(Auth::guard('web')->user()->can('mark-user-deceased'), 403);
+
+            $user->forceFill([
+                'status' => $data['status'],
+                'deceased_at' => now(),
+                'deceased_confirmed_by' => Auth::guard('web')->id(),
+                'deceased_source' => 'admin_manual',
+            ])->save();
+
+            activity()
+                ->causedBy(Auth::guard('web')->user())
+                ->performedOn($user)
+                ->withProperties(['reason' => $data['reason']])
+                ->log('user.marked_deceased');
+        } else {
+            $user->update(['status' => $data['status']]);
+        }
 
         return back()->with('status', 'User status updated.');
     }

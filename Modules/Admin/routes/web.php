@@ -6,11 +6,14 @@ use Modules\Admin\Http\Controllers\Auth\LoginController;
 use Modules\Admin\Http\Controllers\Auth\PasswordResetController;
 use Modules\Admin\Http\Controllers\AdminUserController;
 use Modules\Admin\Http\Controllers\DashboardController;
+use Modules\Admin\Http\Controllers\DeathReportController;
+use Modules\Admin\Http\Controllers\EmergencyAccessController;
 use Modules\Admin\Http\Controllers\NotificationBroadcastController;
 use Modules\Admin\Http\Controllers\RelativeController;
 use Modules\Admin\Http\Controllers\ReportController;
 use Modules\Admin\Http\Controllers\RoleController;
 use Modules\Admin\Http\Controllers\UserController;
+use Modules\Admin\Http\Controllers\VaultController;
 
 Route::prefix('admin')->name('admin.')->middleware('web')->group(function () {
     Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -66,6 +69,21 @@ Route::prefix('admin')->name('admin.')->middleware('web')->group(function () {
         Route::middleware('permission:send-notifications')->group(function () {
             Route::get('notifications', [NotificationBroadcastController::class, 'index'])->name('notifications.index');
             Route::post('notifications', [NotificationBroadcastController::class, 'store'])->name('notifications.store');
+        });
+
+        Route::middleware('permission:mark-user-deceased')->group(function () {
+            Route::get('death-reports', [DeathReportController::class, 'index'])->name('death-reports.index');
+            Route::post('death-reports/{deathReport}/confirm', [DeathReportController::class, 'confirm'])->name('death-reports.confirm');
+            Route::post('death-reports/{deathReport}/reject', [DeathReportController::class, 'reject'])->name('death-reports.reject');
+        });
+
+        Route::prefix('emergency-access')->name('emergency-access.')->group(function () {
+            Route::get('/', [EmergencyAccessController::class, 'index'])->middleware('permission:request-emergency-access')->name('index');
+            Route::post('{user}/request', [EmergencyAccessController::class, 'store'])->middleware('permission:request-emergency-access')->name('request');
+            Route::post('{emergencyAccessRequest}/approve', [EmergencyAccessController::class, 'approve'])->middleware('permission:approve-emergency-access')->name('approve');
+            Route::post('{emergencyAccessRequest}/deny', [EmergencyAccessController::class, 'deny'])->middleware('permission:approve-emergency-access')->name('deny');
+            Route::post('{emergencyAccessRequest}/revoke', [EmergencyAccessController::class, 'revoke'])->middleware('permission:approve-emergency-access')->name('revoke');
+            Route::get('vault/{user}', [VaultController::class, 'show'])->middleware(['permission:request-emergency-access', 'emergency-access.unlocked:user'])->name('vault');
         });
     });
 });

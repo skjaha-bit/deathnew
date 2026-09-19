@@ -1,9 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\Relatives\Http\Controllers\DeathReportController;
 use Modules\Relatives\Http\Controllers\PetController;
 use Modules\Relatives\Http\Controllers\RelativeController;
 use Modules\Relatives\Http\Controllers\WorkplaceController;
+
+// Public: a relative may not be an app user, so this cannot require auth:api.
+// It only ever creates a pending review item - see DeathReportController.
+Route::post('v1/death-reports', [DeathReportController::class, 'store']);
 
 Route::prefix('v1/relatives')->middleware('auth:api')->group(function () {
     Route::get('/', [RelativeController::class, 'index']);

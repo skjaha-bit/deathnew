@@ -1,0 +1,11 @@
+{
+    "name": "EmergencyAccess",
+    "alias": "emergencyaccess",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\EmergencyAccess\\Providers\\EmergencyAccessServiceProvider"
+    ],
+    "files": []
+}
