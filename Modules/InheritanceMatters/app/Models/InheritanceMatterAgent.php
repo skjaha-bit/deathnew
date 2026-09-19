@@ -17,6 +17,12 @@ class InheritanceMatterAgent extends Model
         'sort_order',
     ];
 
+    protected $casts = [
+        'social_security_number' => 'encrypted',
+        'address' => 'encrypted',
+        'phone' => 'encrypted',
+    ];
+
     public function inheritanceMatter(): BelongsTo
     {
         return $this->belongsTo(InheritanceMatter::class);

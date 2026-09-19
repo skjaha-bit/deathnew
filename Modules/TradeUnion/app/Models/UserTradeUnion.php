@@ -27,6 +27,9 @@ class UserTradeUnion extends Model
 
     protected $casts = [
         'still_in_payment' => 'boolean',
+        'department_contact' => 'encrypted',
+        'rights_text' => 'encrypted',
+        'notes_text' => 'encrypted',
     ];
 
     public function user(): BelongsTo

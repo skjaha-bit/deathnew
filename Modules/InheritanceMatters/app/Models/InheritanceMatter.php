@@ -19,6 +19,8 @@ class InheritanceMatter extends Model
 
     protected $casts = [
         'will_exists' => 'boolean',
+        'will_location' => 'encrypted',
+        'notes' => 'encrypted',
     ];
 
     public function user(): BelongsTo

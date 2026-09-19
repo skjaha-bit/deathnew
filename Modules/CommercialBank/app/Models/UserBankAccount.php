@@ -17,6 +17,8 @@ class UserBankAccount extends Model
 
     protected $casts = [
         'is_joint' => 'boolean',
+        'account_number' => 'encrypted',
+        'swift_iban' => 'encrypted',
     ];
 
     public function userCommercialBank(): BelongsTo

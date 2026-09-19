@@ -18,6 +18,10 @@ class InsurancePolicy extends Model
         'contact_message',
     ];
 
+    protected $casts = [
+        'contact_message' => 'encrypted',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

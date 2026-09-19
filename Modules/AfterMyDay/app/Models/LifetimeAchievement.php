@@ -21,6 +21,9 @@ class LifetimeAchievement extends Model
 
     protected $casts = [
         'date_of_birth' => 'date',
+        'place_of_birth' => 'encrypted',
+        'personal_information' => 'encrypted',
+        'another_thing' => 'encrypted',
     ];
 
     public function user(): BelongsTo

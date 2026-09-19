@@ -19,6 +19,8 @@ class Memory extends Model
 
     protected $casts = [
         'date_of_memory' => 'date',
+        'description' => 'encrypted',
+        'location_notes' => 'encrypted',
     ];
 
     public function user(): BelongsTo

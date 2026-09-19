@@ -19,6 +19,7 @@ class UserCommercialBank extends Model
 
     protected $casts = [
         'bank_vault' => 'boolean',
+        'notes_text' => 'encrypted',
     ];
 
     public function user(): BelongsTo
