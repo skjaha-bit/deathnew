@@ -57,8 +57,8 @@ class RoleController extends Controller
 
     public function destroy(Role $role)
     {
-        if ($role->name === 'admin') {
-            return back()->with('error', 'Cannot delete the admin role.');
+        if (in_array($role->name, ['admin', 'super-admin', 'support-agent'], true)) {
+            return back()->with('error', 'Cannot delete a built-in admin-tier role.');
         }
 
         $role->delete();

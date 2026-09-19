@@ -5,7 +5,7 @@ use Modules\Core\Http\Controllers\Admin\LanguageController;
 use Modules\Core\Http\Controllers\Admin\SettingController;
 use Modules\Core\Http\Controllers\Admin\TranslationController;
 
-Route::prefix('admin')->name('admin.')->middleware(['web', 'auth', 'role:admin'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['web', 'auth', 'role:admin|super-admin|support-agent', 'permission:manage-settings'])->group(function () {
     Route::get('languages', [LanguageController::class, 'index'])->name('languages.index');
     Route::post('languages', [LanguageController::class, 'store'])->name('languages.store');
     Route::post('languages/{language}/toggle-active', [LanguageController::class, 'toggleActive'])->name('languages.toggle-active');

@@ -30,7 +30,7 @@ class LoginController extends Controller
 
         $user = Auth::guard('web')->user();
 
-        if (! $user->hasRole('admin')) {
+        if (! $user->hasAnyRole(['super-admin', 'admin', 'support-agent'])) {
             Auth::guard('web')->logout();
 
             return back()->withErrors(['email' => 'You do not have access to the admin panel.']);
