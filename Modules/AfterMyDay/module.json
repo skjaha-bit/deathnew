@@ -1,0 +1,11 @@
+{
+    "name": "AfterMyDay",
+    "alias": "aftermyday",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\AfterMyDay\\Providers\\AfterMyDayServiceProvider"
+    ],
+    "files": []
+}

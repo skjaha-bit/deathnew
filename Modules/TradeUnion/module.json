@@ -1,0 +1,11 @@
+{
+    "name": "TradeUnion",
+    "alias": "tradeunion",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\TradeUnion\\Providers\\TradeUnionServiceProvider"
+    ],
+    "files": []
+}

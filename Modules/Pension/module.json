@@ -1,0 +1,11 @@
+{
+    "name": "Pension",
+    "alias": "pension",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Pension\\Providers\\PensionServiceProvider"
+    ],
+    "files": []
+}

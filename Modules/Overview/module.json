@@ -1,0 +1,11 @@
+{
+    "name": "Overview",
+    "alias": "overview",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Overview\\Providers\\OverviewServiceProvider"
+    ],
+    "files": []
+}

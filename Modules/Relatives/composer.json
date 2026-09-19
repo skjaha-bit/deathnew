@@ -1,0 +1,30 @@
+{
+    "name": "nwidart/relatives",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Relatives\\": "app/",
+            "Modules\\Relatives\\Database\\Factories\\": "database/factories/",
+            "Modules\\Relatives\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Relatives\\Tests\\": "tests/"
+        }
+    }
+}

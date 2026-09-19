@@ -1,0 +1,30 @@
+{
+    "name": "nwidart/aftermyday",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\AfterMyDay\\": "app/",
+            "Modules\\AfterMyDay\\Database\\Factories\\": "database/factories/",
+            "Modules\\AfterMyDay\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\AfterMyDay\\Tests\\": "tests/"
+        }
+    }
+}

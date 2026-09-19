@@ -1,0 +1,18 @@
+{
+    "Core": true,
+    "Auth": true,
+    "Overview": true,
+    "Relatives": true,
+    "TradeUnion": true,
+    "CommercialBank": true,
+    "Pension": true,
+    "Insurance": true,
+    "Property": true,
+    "AfterMyDay": true,
+    "InheritanceMatters": true,
+    "Cms": true,
+    "Notification": true,
+    "Subscription": true,
+    "UserSubscriptions": true,
+    "Admin": true
+}

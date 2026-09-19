@@ -1,0 +1,17 @@
+<?php
+
+namespace Modules\UserSubscriptions\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class SubscriptionType extends Model
+{
+    protected $fillable = [
+        'name',
+        'is_active',
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
+}

@@ -1,0 +1,11 @@
+{
+    "name": "InheritanceMatters",
+    "alias": "inheritancematters",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\InheritanceMatters\\Providers\\InheritanceMattersServiceProvider"
+    ],
+    "files": []
+}

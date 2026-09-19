@@ -1,0 +1,145 @@
+
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37m/[39m[38;5;103m ....................................................................................... routes/web.php:5[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37madmin[39m[38;5;103m ......................... admin.dashboard › Modules\Admin\Http\Controllers\DashboardController@index[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37madmin/activity-logs[39m[38;5;103m admin.activity-logs.index › Modules\Admin\Http\Controllers\ActivityLogController@index[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37madmin/banks[39m[38;5;103m ....... admin.banks.index › Modules\CommercialBank\Http\Controllers\Admin\BankController@index[39m
+  [33mPOST[39m      [37madmin/banks[39m[38;5;103m ....... admin.banks.store › Modules\CommercialBank\Http\Controllers\Admin\BankController@store[39m
+  [31mDELETE[39m    [37madmin/banks/[39m[33m{bank}[39m[38;5;103m admin.banks.destroy › Modules\CommercialBank\Http\Controllers\Admin\BankController@des…[39m
+  [33mPOST[39m      [37madmin/banks/[39m[33m{bank}[39m[37m/toggle-active[39m[38;5;103m admin.banks.toggle-active › Modules\CommercialBank\Http\Controllers\Admi…[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37madmin/banners[39m[38;5;103m ............ admin.banners.index › Modules\Cms\Http\Controllers\Admin\BannerController@index[39m
+  [33mPOST[39m      [37madmin/banners[39m[38;5;103m ............ admin.banners.store › Modules\Cms\Http\Controllers\Admin\BannerController@store[39m
+  [31mDELETE[39m    [37madmin/banners/[39m[33m{banner}[39m[38;5;103m admin.banners.destroy › Modules\Cms\Http\Controllers\Admin\BannerController@destroy[39m
+  [33mPOST[39m      [37madmin/banners/[39m[33m{banner}[39m[37m/toggle-active[39m[38;5;103m admin.banners.toggle-active › Modules\Cms\Http\Controllers\Admin\Ban…[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37madmin/cms[39m[38;5;103m ................ admin.cms.index › Modules\Cms\Http\Controllers\Admin\CmsContentController@index[39m
+  [33mPOST[39m      [37madmin/cms[39m[38;5;103m ................ admin.cms.store › Modules\Cms\Http\Controllers\Admin\CmsContentController@store[39m
+  [33mPUT[39m       [37madmin/cms/[39m[33m{cmsContent}[39m[38;5;103m . admin.cms.update › Modules\Cms\Http\Controllers\Admin\CmsContentController@update[39m
+  [31mDELETE[39m    [37madmin/cms/[39m[33m{cmsContent}[39m[38;5;103m admin.cms.destroy › Modules\Cms\Http\Controllers\Admin\CmsContentController@destroy[39m
+  [33mPOST[39m      [37madmin/cms/[39m[33m{cmsContent}[39m[37m/toggle-active[39m[38;5;103m admin.cms.toggle-active › Modules\Cms\Http\Controllers\Admin\CmsCont…[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37madmin/insurance-companies[39m[38;5;103m admin.insurance-companies.index › Modules\Insurance\Http\Controllers\Admin\Insu…[39m
+  [33mPOST[39m      [37madmin/insurance-companies[39m[38;5;103m admin.insurance-companies.store › Modules\Insurance\Http\Controllers\Admin\Insu…[39m
+  [31mDELETE[39m    [37madmin/insurance-companies/[39m[33m{insuranceCompany}[39m[38;5;103m admin.insurance-companies.destroy › Modules\Insurance\Http\C…[39m
+  [33mPOST[39m      [37madmin/insurance-companies/[39m[33m{insuranceCompany}[39m[37m/toggle-active[39m[38;5;103m admin.insurance-companies.toggle-active › Modu…[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37madmin/languages[39m[38;5;103m ..... admin.languages.index › Modules\Core\Http\Controllers\Admin\LanguageController@index[39m
+  [33mPOST[39m      [37madmin/languages[39m[38;5;103m ..... admin.languages.store › Modules\Core\Http\Controllers\Admin\LanguageController@store[39m
+  [31mDELETE[39m    [37madmin/languages/[39m[33m{language}[39m[38;5;103m admin.languages.destroy › Modules\Core\Http\Controllers\Admin\LanguageControll…[39m
+  [33mPOST[39m      [37madmin/languages/[39m[33m{language}[39m[37m/make-default[39m[38;5;103m admin.languages.make-default › Modules\Core\Http\Controllers\Admi…[39m
+  [33mPOST[39m      [37madmin/languages/[39m[33m{language}[39m[37m/toggle-active[39m[38;5;103m admin.languages.toggle-active › Modules\Core\Http\Controllers\Ad…[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37madmin/login[39m[38;5;103m .............. admin.login › Modules\Admin\Http\Controllers\Auth\LoginController@showLoginForm[39m
+  [33mPOST[39m      [37madmin/login[39m[38;5;103m .............. admin.login.attempt › Modules\Admin\Http\Controllers\Auth\LoginController@login[39m
+  [33mPOST[39m      [37madmin/logout[39m[38;5;103m ................... admin.logout › Modules\Admin\Http\Controllers\Auth\LoginController@logout[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37madmin/notifications[39m[38;5;103m admin.notifications.index › Modules\Admin\Http\Controllers\NotificationBroadcastContr…[39m
+  [33mPOST[39m      [37madmin/notifications[39m[38;5;103m admin.notifications.store › Modules\Admin\Http\Controllers\NotificationBroadcastContr…[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37madmin/pension-funds[39m[38;5;103m admin.pension-funds.index › Modules\Pension\Http\Controllers\Admin\PensionFundControl…[39m
+  [33mPOST[39m      [37madmin/pension-funds[39m[38;5;103m admin.pension-funds.store › Modules\Pension\Http\Controllers\Admin\PensionFundControl…[39m
+  [33mPUT[39m       [37madmin/pension-funds/[39m[33m{pensionFund}[39m[38;5;103m admin.pension-funds.update › Modules\Pension\Http\Controllers\Admin\Pen…[39m
+  [31mDELETE[39m    [37madmin/pension-funds/[39m[33m{pensionFund}[39m[38;5;103m admin.pension-funds.destroy › Modules\Pension\Http\Controllers\Admin\Pe…[39m
+  [33mPOST[39m      [37madmin/pension-funds/[39m[33m{pensionFund}[39m[37m/toggle-active[39m[38;5;103m admin.pension-funds.toggle-active › Modules\Pension\Http\…[39m
+  [33mPOST[39m      [37madmin/permissions[39m[38;5;103m admin.permissions.store › Modules\Admin\Http\Controllers\RoleController@storePermission[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37madmin/relatives[39m[38;5;103m admin.relatives.index › Modules\Relatives\Http\Controllers\Admin\RelativeController@index[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37madmin/reports[39m[38;5;103m ................ admin.reports.index › Modules\Admin\Http\Controllers\ReportController@index[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37madmin/reports/users/export[39m[38;5;103m admin.reports.export-users › Modules\Admin\Http\Controllers\ReportController@e…[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37madmin/roles[39m[38;5;103m ...................... admin.roles.index › Modules\Admin\Http\Controllers\RoleController@index[39m
+  [33mPOST[39m      [37madmin/roles[39m[38;5;103m ...................... admin.roles.store › Modules\Admin\Http\Controllers\RoleController@store[39m
+  [31mDELETE[39m    [37madmin/roles/[39m[33m{role}[39m[38;5;103m ........... admin.roles.destroy › Modules\Admin\Http\Controllers\RoleController@destroy[39m
+  [33mPUT[39m       [37madmin/roles/[39m[33m{role}[39m[37m/permissions[39m[38;5;103m admin.roles.sync-permissions › Modules\Admin\Http\Controllers\RoleControll…[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37madmin/settings[39m[38;5;103m ........ admin.settings.index › Modules\Core\Http\Controllers\Admin\SettingController@index[39m
+  [33mPUT[39m       [37madmin/settings[39m[38;5;103m ...... admin.settings.update › Modules\Core\Http\Controllers\Admin\SettingController@update[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37madmin/subscription-plans[39m[38;5;103m admin.subscription-plans.index › Modules\Subscription\Http\Controllers\Admin\Sub…[39m
+  [33mPOST[39m      [37madmin/subscription-plans[39m[38;5;103m admin.subscription-plans.store › Modules\Subscription\Http\Controllers\Admin\Sub…[39m
+  [33mPUT[39m       [37madmin/subscription-plans/[39m[33m{subscriptionPlan}[39m[38;5;103m admin.subscription-plans.update › Modules\Subscription\Http\C…[39m
+  [31mDELETE[39m    [37madmin/subscription-plans/[39m[33m{subscriptionPlan}[39m[38;5;103m admin.subscription-plans.destroy › Modules\Subscription\Http\…[39m
+  [33mPOST[39m      [37madmin/subscription-plans/[39m[33m{subscriptionPlan}[39m[37m/toggle-active[39m[38;5;103m admin.subscription-plans.toggle-active › Module…[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37madmin/trade-unions[39m[38;5;103m admin.trade-unions.index › Modules\TradeUnion\Http\Controllers\Admin\TradeUnionControl…[39m
+  [33mPOST[39m      [37madmin/trade-unions[39m[38;5;103m admin.trade-unions.store › Modules\TradeUnion\Http\Controllers\Admin\TradeUnionControl…[39m
+  [31mDELETE[39m    [37madmin/trade-unions/[39m[33m{tradeUnion}[39m[38;5;103m admin.trade-unions.destroy › Modules\TradeUnion\Http\Controllers\Admin\Tr…[39m
+  [33mPOST[39m      [37madmin/trade-unions/[39m[33m{tradeUnion}[39m[37m/toggle-active[39m[38;5;103m admin.trade-unions.toggle-active › Modules\TradeUnion\Http\…[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37madmin/translations[39m[38;5;103m admin.translations.index › Modules\Core\Http\Controllers\Admin\TranslationController@i…[39m
+  [33mPOST[39m      [37madmin/translations[39m[38;5;103m admin.translations.store › Modules\Core\Http\Controllers\Admin\TranslationController@s…[39m
+  [31mDELETE[39m    [37madmin/translations/[39m[33m{translation}[39m[38;5;103m admin.translations.destroy › Modules\Core\Http\Controllers\Admin\Transla…[39m
+  [33mPUT[39m       [37madmin/translations/[39m[33m{translation}[39m[37m/value[39m[38;5;103m admin.translations.update-value › Modules\Core\Http\Controllers\Ad…[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37madmin/users[39m[38;5;103m ...................... admin.users.index › Modules\Admin\Http\Controllers\UserController@index[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37madmin/users/[39m[33m{user}[39m[38;5;103m ................. admin.users.show › Modules\Admin\Http\Controllers\UserController@show[39m
+  [31mDELETE[39m    [37madmin/users/[39m[33m{user}[39m[38;5;103m ........... admin.users.destroy › Modules\Admin\Http\Controllers\UserController@destroy[39m
+  [33mPUT[39m       [37madmin/users/[39m[33m{user}[39m[37m/roles[39m[38;5;103m admin.users.sync-roles › Modules\Admin\Http\Controllers\UserController@syncRoles[39m
+  [33mPUT[39m       [37madmin/users/[39m[33m{user}[39m[37m/status[39m[38;5;103m admin.users.update-status › Modules\Admin\Http\Controllers\UserController@updat…[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37mapi/documentation[39m[38;5;103m ........................ l5-swagger.default.api › L5Swagger\Http › SwaggerController@api[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37mapi/oauth2-callback[39m[38;5;103m l5-swagger.default.oauth2_callback › L5Swagger\Http › SwaggerController@oauth2Callback[39m
+  [33mPOST[39m      [37mapi/v1/auth/login[39m[38;5;103m .............................. api. › Modules\Auth\Http\Controllers\AuthController@login[39m
+  [33mPOST[39m      [37mapi/v1/auth/logout[39m[38;5;103m ............................ api. › Modules\Auth\Http\Controllers\AuthController@logout[39m
+  [33mPOST[39m      [37mapi/v1/auth/register[39m[38;5;103m ........................ api. › Modules\Auth\Http\Controllers\AuthController@register[39m
+  [33mPOST[39m      [37mapi/v1/auth/resend-otp[39m[38;5;103m ..................... api. › Modules\Auth\Http\Controllers\AuthController@resendOtp[39m
+  [33mPOST[39m      [37mapi/v1/auth/verify-otp[39m[38;5;103m ..................... api. › Modules\Auth\Http\Controllers\AuthController@verifyOtp[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37mapi/v1/banks[39m[38;5;103m ............... api. › Modules\CommercialBank\Http\Controllers\Api\BankOptionController@index[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37mapi/v1/banners[39m[38;5;103m ............................ api. › Modules\Cms\Http\Controllers\Api\BannerController@index[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37mapi/v1/cms-contents[39m[38;5;103m ................... api. › Modules\Cms\Http\Controllers\Api\CmsContentController@index[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37mapi/v1/commercial-banks[39m[38;5;103m api. › Modules\CommercialBank\Http\Controllers\Api\UserCommercialBankController@i…[39m
+  [33mPOST[39m      [37mapi/v1/commercial-banks[39m[38;5;103m api. › Modules\CommercialBank\Http\Controllers\Api\UserCommercialBankController@s…[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37mapi/v1/commercial-banks/[39m[33m{userCommercialBank}[39m[38;5;103m api. › Modules\CommercialBank\Http\Controllers\Api\UserComme…[39m
+  [33mPUT[39m       [37mapi/v1/commercial-banks/[39m[33m{userCommercialBank}[39m[38;5;103m api. › Modules\CommercialBank\Http\Controllers\Api\UserComme…[39m
+  [31mDELETE[39m    [37mapi/v1/commercial-banks/[39m[33m{userCommercialBank}[39m[38;5;103m api. › Modules\CommercialBank\Http\Controllers\Api\UserComme…[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37mapi/v1/death-notice[39m[38;5;103m ............ api. › Modules\AfterMyDay\Http\Controllers\Api\DeathNoticeController@show[39m
+  [33mPUT[39m       [37mapi/v1/death-notice[39m[38;5;103m .......... api. › Modules\AfterMyDay\Http\Controllers\Api\DeathNoticeController@update[39m
+  [33mPOST[39m      [37mapi/v1/death-notice/photo[39m[38;5;103m api. › Modules\AfterMyDay\Http\Controllers\Api\DeathNoticeController@uploadPhoto[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37mapi/v1/funeral[39m[38;5;103m ..................... api. › Modules\AfterMyDay\Http\Controllers\Api\FuneralController@show[39m
+  [33mPUT[39m       [37mapi/v1/funeral[39m[38;5;103m ................... api. › Modules\AfterMyDay\Http\Controllers\Api\FuneralController@update[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37mapi/v1/insurance-companies[39m[38;5;103m api. › Modules\Insurance\Http\Controllers\Api\InsuranceCompanyOptionController…[39m
+  [31mDELETE[39m    [37mapi/v1/insurance-documents/[39m[33m{document}[39m[38;5;103m api. › Modules\Insurance\Http\Controllers\Api\InsuranceDocumentCont…[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37mapi/v1/insurance-policies[39m[38;5;103m .. api. › Modules\Insurance\Http\Controllers\Api\InsurancePolicyController@index[39m
+  [33mPOST[39m      [37mapi/v1/insurance-policies[39m[38;5;103m .. api. › Modules\Insurance\Http\Controllers\Api\InsurancePolicyController@store[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37mapi/v1/insurance-policies/[39m[33m{policy}[39m[38;5;103m api. › Modules\Insurance\Http\Controllers\Api\InsurancePolicyControlle…[39m
+  [33mPUT[39m       [37mapi/v1/insurance-policies/[39m[33m{policy}[39m[38;5;103m api. › Modules\Insurance\Http\Controllers\Api\InsurancePolicyControlle…[39m
+  [31mDELETE[39m    [37mapi/v1/insurance-policies/[39m[33m{policy}[39m[38;5;103m api. › Modules\Insurance\Http\Controllers\Api\InsurancePolicyControlle…[39m
+  [33mPOST[39m      [37mapi/v1/insurance-policies/[39m[33m{policy}[39m[37m/contact-request[39m[38;5;103m api. › Modules\Insurance\Http\Controllers\Api\Insuranc…[39m
+  [33mPOST[39m      [37mapi/v1/insurance-policies/[39m[33m{policy}[39m[37m/documents[39m[38;5;103m api. › Modules\Insurance\Http\Controllers\Api\InsuranceDocum…[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37mapi/v1/languages[39m[38;5;103m ....................... api. › Modules\Core\Http\Controllers\Api\LanguageController@index[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37mapi/v1/notifications[39m[38;5;103m ....... api. › Modules\Notification\Http\Controllers\Api\NotificationController@index[39m
+  [33mPOST[39m      [37mapi/v1/notifications/mark-all-read[39m[38;5;103m api. › Modules\Notification\Http\Controllers\Api\NotificationControlle…[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37mapi/v1/notifications/unread-count[39m[38;5;103m api. › Modules\Notification\Http\Controllers\Api\NotificationController…[39m
+  [33mPOST[39m      [37mapi/v1/notifications/[39m[33m{id}[39m[37m/read[39m[38;5;103m api. › Modules\Notification\Http\Controllers\Api\NotificationController@ma…[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37mapi/v1/overview[39m[38;5;103m .................... api. › Modules\Overview\Http\Controllers\Api\OverviewController@index[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37mapi/v1/pension-entries[39m[38;5;103m .......... api. › Modules\Pension\Http\Controllers\Api\PensionEntryController@index[39m
+  [33mPOST[39m      [37mapi/v1/pension-entries[39m[38;5;103m .......... api. › Modules\Pension\Http\Controllers\Api\PensionEntryController@store[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37mapi/v1/pension-entries/[39m[33m{pensionEntry}[39m[38;5;103m api. › Modules\Pension\Http\Controllers\Api\PensionEntryController@…[39m
+  [33mPUT[39m       [37mapi/v1/pension-entries/[39m[33m{pensionEntry}[39m[38;5;103m api. › Modules\Pension\Http\Controllers\Api\PensionEntryController@…[39m
+  [31mDELETE[39m    [37mapi/v1/pension-entries/[39m[33m{pensionEntry}[39m[38;5;103m api. › Modules\Pension\Http\Controllers\Api\PensionEntryController@…[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37mapi/v1/pension-fund-inquiries[39m[38;5;103m api. › Modules\Pension\Http\Controllers\Api\PensionFundInquiryController@in…[39m
+  [33mPOST[39m      [37mapi/v1/pension-fund-inquiries[39m[38;5;103m api. › Modules\Pension\Http\Controllers\Api\PensionFundInquiryController@st…[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37mapi/v1/pension-funds[39m[38;5;103m ....... api. › Modules\Pension\Http\Controllers\Api\PensionFundOptionController@index[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37mapi/v1/profile[39m[38;5;103m ............................... api. › Modules\Auth\Http\Controllers\ProfileController@show[39m
+  [33mPUT[39m       [37mapi/v1/profile[39m[38;5;103m ............................. api. › Modules\Auth\Http\Controllers\ProfileController@update[39m
+  [33mPOST[39m      [37mapi/v1/profile/avatar[39m[38;5;103m ................ api. › Modules\Auth\Http\Controllers\ProfileController@uploadAvatar[39m
+  [33mPOST[39m      [37mapi/v1/profile/change-password[39m[38;5;103m ..... api. › Modules\Auth\Http\Controllers\ProfileController@changePassword[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37mapi/v1/relatives[39m[38;5;103m .................. api. › Modules\Relatives\Http\Controllers\Api\RelativeController@index[39m
+  [33mPOST[39m      [37mapi/v1/relatives[39m[38;5;103m .................. api. › Modules\Relatives\Http\Controllers\Api\RelativeController@store[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37mapi/v1/relatives/[39m[33m{relative}[39m[38;5;103m ........ api. › Modules\Relatives\Http\Controllers\Api\RelativeController@show[39m
+  [33mPUT[39m       [37mapi/v1/relatives/[39m[33m{relative}[39m[38;5;103m ...... api. › Modules\Relatives\Http\Controllers\Api\RelativeController@update[39m
+  [31mDELETE[39m    [37mapi/v1/relatives/[39m[33m{relative}[39m[38;5;103m ..... api. › Modules\Relatives\Http\Controllers\Api\RelativeController@destroy[39m
+  [33mPOST[39m      [37mapi/v1/relatives/[39m[33m{relative}[39m[37m/invite[39m[38;5;103m api. › Modules\Relatives\Http\Controllers\Api\RelativeController@invite[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37mapi/v1/subscription-plans[39m[38;5;103m api. › Modules\Subscription\Http\Controllers\Api\SubscriptionPlanController@ind…[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37mapi/v1/subscriptions/current[39m[38;5;103m api. › Modules\Subscription\Http\Controllers\Api\SubscriptionController@curr…[39m
+  [33mPOST[39m      [37mapi/v1/subscriptions/select[39m[38;5;103m api. › Modules\Subscription\Http\Controllers\Api\SubscriptionController@select[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37mapi/v1/trade-unions[39m[38;5;103m ...... api. › Modules\TradeUnion\Http\Controllers\Api\TradeUnionOptionController@index[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37mapi/v1/translations[39m[38;5;103m ................. api. › Modules\Core\Http\Controllers\Api\TranslationController@index[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37mapi/v1/user-trade-unions[39m[38;5;103m ... api. › Modules\TradeUnion\Http\Controllers\Api\UserTradeUnionController@index[39m
+  [33mPOST[39m      [37mapi/v1/user-trade-unions[39m[38;5;103m ... api. › Modules\TradeUnion\Http\Controllers\Api\UserTradeUnionController@store[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37mapi/v1/user-trade-unions/[39m[33m{userTradeUnion}[39m[38;5;103m api. › Modules\TradeUnion\Http\Controllers\Api\UserTradeUnionCo…[39m
+  [33mPUT[39m       [37mapi/v1/user-trade-unions/[39m[33m{userTradeUnion}[39m[38;5;103m api. › Modules\TradeUnion\Http\Controllers\Api\UserTradeUnionCo…[39m
+  [31mDELETE[39m    [37mapi/v1/user-trade-unions/[39m[33m{userTradeUnion}[39m[38;5;103m api. › Modules\TradeUnion\Http\Controllers\Api\UserTradeUnionCo…[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37mdocs[39m[38;5;103m ................................... l5-swagger.default.docs › L5Swagger\Http › SwaggerController@docs[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37mdocs/asset/[39m[33m{asset}[39m[38;5;103m .............. l5-swagger.default.asset › L5Swagger\Http › SwaggerAssetController@index[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37moauth/authorize[39m[38;5;103m . passport.authorizations.authorize › Laravel\Passport › AuthorizationController@authorize[39m
+  [33mPOST[39m      [37moauth/authorize[39m[38;5;103m passport.authorizations.approve › Laravel\Passport › ApproveAuthorizationController@appro…[39m
+  [31mDELETE[39m    [37moauth/authorize[39m[38;5;103m ....... passport.authorizations.deny › Laravel\Passport › DenyAuthorizationController@deny[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37moauth/device[39m[38;5;103m ............................... passport.device › Laravel\Passport › DeviceUserCodeController[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37moauth/device/authorize[39m[38;5;103m passport.device.authorizations.authorize › Laravel\Passport › DeviceAuthorizationC…[39m
+  [33mPOST[39m      [37moauth/device/authorize[39m[38;5;103m passport.device.authorizations.approve › Laravel\Passport › ApproveDeviceAuthoriza…[39m
+  [31mDELETE[39m    [37moauth/device/authorize[39m[38;5;103m passport.device.authorizations.deny › Laravel\Passport › DenyDeviceAuthorizationCo…[39m
+  [33mPOST[39m      [37moauth/device/code[39m[38;5;103m ......................... passport.device.code › Laravel\Passport › DeviceCodeController[39m
+  [33mPOST[39m      [37moauth/token[39m[38;5;103m ......................... passport.token › Laravel\Passport › AccessTokenController@issueToken[39m
+  [33mPOST[39m      [37moauth/token/refresh[39m[38;5;103m ......... passport.token.refresh › Laravel\Passport › TransientTokenController@refresh[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37mstorage/[39m[33m{path}[39m[38;5;103m storage.local › vendor/laravel/framework/src/Illuminate/Filesystem/FilesystemServiceProvid…[39m
+  [33mPUT[39m       [37mstorage/[39m[33m{path}[39m[38;5;103m storage.local.upload › vendor/laravel/framework/src/Illuminate/Filesystem/FilesystemServic…[39m
+  [34mGET[39m[38;5;103m|[39m[38;5;103mHEAD[39m  [37mup[39m[38;5;103m ........... vendor/laravel/framework/src/Illuminate/Foundation/Configuration/ApplicationBuilder.php:219[39m
+
+                                                                                                  [34;1mShowing [141] routes[39;22m
+

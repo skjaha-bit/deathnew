@@ -1,0 +1,11 @@
+{
+    "name": "CommercialBank",
+    "alias": "commercialbank",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\CommercialBank\\Providers\\CommercialBankServiceProvider"
+    ],
+    "files": []
+}
