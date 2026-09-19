@@ -6,6 +6,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -15,6 +16,8 @@ use Modules\Core\Models\Language;
 use Modules\Auth\Models\UserEmail;
 use Modules\Auth\Models\UserPhone;
 use Modules\Relatives\Models\Relative;
+use Modules\Subscription\Models\Subscription;
+use Modules\UserSubscriptions\Models\UserSubscription;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Permission\Traits\HasRoles;
@@ -99,6 +102,16 @@ class User extends Authenticatable
     public function phones(): HasMany
     {
         return $this->hasMany(UserPhone::class);
+    }
+
+    public function subscription(): HasOne
+    {
+        return $this->hasOne(Subscription::class);
+    }
+
+    public function userSubscriptions(): HasMany
+    {
+        return $this->hasMany(UserSubscription::class);
     }
 
     public function fullPhoneNumber(): string

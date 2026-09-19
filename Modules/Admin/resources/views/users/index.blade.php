@@ -30,6 +30,7 @@
                         <th>Name</th>
                         <th>Email</th>
                         <th>Status</th>
+                        <th>Plan</th>
                         <th>Relatives</th>
                         <th>Registered</th>
                         <th></th>
@@ -41,12 +42,13 @@
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
                             <td><span class="badge bg-{{ $user->status === 'active' ? 'success' : ($user->status === 'suspended' ? 'warning' : 'secondary') }}">{{ ucfirst($user->status) }}</span></td>
+                            <td>{{ $user->subscription?->plan?->name ?? '—' }}</td>
                             <td>{{ $user->relatives_count }}</td>
                             <td>{{ $user->created_at->format('Y-m-d') }}</td>
                             <td class="text-end"><a href="{{ route('admin.users.show', $user) }}" class="btn btn-sm btn-outline-primary">View</a></td>
                         </tr>
                     @empty
-                        <tr><td colspan="6" class="text-center text-muted py-4">No users found.</td></tr>
+                        <tr><td colspan="7" class="text-center text-muted py-4">No users found.</td></tr>
                     @endforelse
                 </tbody>
             </table>
