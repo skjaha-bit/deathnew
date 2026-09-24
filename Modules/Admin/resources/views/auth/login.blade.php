@@ -15,7 +15,7 @@
 </head>
 <body>
 <div class="container">
-    <div class="card login-card p-4">
+    <div class="card login-card p-4">  
         <div class="text-center mb-4">
             <div class="fs-3">🌿</div>
             <h5 class="brand-gradient mb-0">FYRIRHYGGJA</h5>
