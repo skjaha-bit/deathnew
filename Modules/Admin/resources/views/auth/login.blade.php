@@ -4,9 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Login · FYRIRHYGGJA Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background: linear-gradient(135deg, #14342e, #1f5049 60%, #2f7a6c); min-height: 100vh; display: flex; align-items: center; font-family: system-ui, sans-serif; }
+        body { background: linear-gradient(135deg, #14342e, #1f5049 60%, #2f7a6c); min-height: 100vh; display: flex; align-items: center; font-family: 'Inter', system-ui, sans-serif; font-size: .875rem; -webkit-font-smoothing: antialiased; }
         .login-card { max-width: 380px; margin: auto; border: none; border-radius: 1.25rem; box-shadow: 0 20px 60px rgba(0,0,0,.35); }
         .brand-gradient { background: linear-gradient(135deg, #fff, #d9ad4f); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 800; }
         .btn-brand { background: linear-gradient(135deg, #d9ad4f, #b6862c); border: none; border-radius: 999px; font-weight: 600; color: #14342e; }
