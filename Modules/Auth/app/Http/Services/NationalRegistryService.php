@@ -79,6 +79,7 @@ class NationalRegistryService
                 'address' => $body['address'] ?? null,
                 'postal_code' => $body['postalCode'] ?? null,
                 'city' => $body['city'] ?? null,
+                'registry_response' => $body,
             ],
         ];
     }

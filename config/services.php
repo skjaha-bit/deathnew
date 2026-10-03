@@ -46,8 +46,7 @@ return [
         'company_key' => env('TAKTIKAL_COMPANY_KEY'),
         'api_key' => env('TAKTIKAL_API_KEY'),
         'webhook_secret' => env('TAKTIKAL_WEBHOOK_SECRET'),
-        'flow_key' => env('TAKTIKAL_FLOW_KEY'),
-    ],
+        'flow_key' => env('TAKTIKAL_FLOW_KEY'),    ],
 
     'otp' => [
         'length' => env('OTP_LENGTH', 6),
