@@ -26,6 +26,11 @@ class NationalRegistryService
 
     private const NATIONALITY_KEYS = ['nationality', 'citizenship', 'countryOfCitizenship'];
 
+    /** Þjóðskrá holds no contact details, so these only arrive if the Taktikal flow adds them. */
+    private const EMAIL_KEYS = ['email', 'emailAddress'];
+
+    private const PHONE_KEYS = ['phoneNumber', 'phone', 'mobile', 'mobileNumber', 'mobilePhone'];
+
     /**
      * @return array{valid: bool, deceased: bool, deceased_at: ?string, data: array}
      *
@@ -94,8 +99,8 @@ class NationalRegistryService
                 'city' => $body['city'] ?? null,
                 'birth_date' => $birthDate,
                 'nationality' => $this->firstValue($body, $meta, self::NATIONALITY_KEYS),
-                'email' => $body['email'] ?? $meta['email'] ?? null,
-                'phone' => $body['phoneNumber'] ?? $meta['phoneNumber'] ?? null,
+                'email' => $this->firstValue($body, $meta, self::EMAIL_KEYS),
+                'phone' => $this->firstValue($body, $meta, self::PHONE_KEYS),
                 'deceased' => $deceased,
                 'deceased_at' => $deceasedAt,
             ],
