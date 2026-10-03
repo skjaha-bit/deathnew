@@ -5,7 +5,8 @@ namespace Modules\Auth\Http\Services;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use RuntimeException;
+use Modules\Auth\Exceptions\NationalRegistryUnavailableException;
+use Throwable;
 
 /**
  * Looks a kennitala up in the Icelandic national registry (Þjóðskrá) through Taktikal.
@@ -23,7 +24,7 @@ class NationalRegistryService
     /**
      * @return array{valid: bool, deceased: bool, deceased_at: ?string, data: array}
      *
-     * @throws RuntimeException when the registry can't be reached or answers unexpectedly.
+     * @throws NationalRegistryUnavailableException when the registry can't be reached or answers unexpectedly.
      */
     public function lookup(string $kennitala): array
     {
@@ -39,9 +40,9 @@ class NationalRegistryService
                     'ssn' => $ssn,
                 ]);
         } catch (ConnectionException $e) {
-            Log::channel('api')->error('Taktikal national registry unreachable', ['message' => $e->getMessage()]);
+            $this->logError('Taktikal national registry unreachable', ['message' => $e->getMessage()]);
 
-            throw new RuntimeException('National registry is unavailable. Please try again later.');
+            throw new NationalRegistryUnavailableException;
         }
 
         $body = $response->json() ?? [];
@@ -51,12 +52,12 @@ class NationalRegistryService
         }
 
         if ($response->failed()) {
-            Log::channel('api')->error('Taktikal national registry lookup failed', [
+            $this->logError('Taktikal national registry lookup failed', [
                 'status' => $response->status(),
                 'body' => $response->body(),
             ]);
 
-            throw new RuntimeException('National registry is unavailable. Please try again later.');
+            throw new NationalRegistryUnavailableException;
         }
 
         if (empty($body['name'])) {
@@ -80,6 +81,15 @@ class NationalRegistryService
                 'city' => $body['city'] ?? null,
             ],
         ];
+    }
+
+    /** A broken log file must never block a login. */
+    private function logError(string $message, array $context): void
+    {
+        try {
+            Log::channel('api')->error($message, $context);
+        } catch (Throwable) {
+        }
     }
 
     private function hasError(array $body, string $code): bool

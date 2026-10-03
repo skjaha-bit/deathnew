@@ -12,9 +12,9 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Modules\Auth\Exceptions\LoginException;
+use Modules\Auth\Exceptions\NationalRegistryUnavailableException;
 use Modules\Auth\Models\UserEmail;
 use Modules\Auth\Models\UserPhone;
-use RuntimeException;
 
 class AuthService
 {
@@ -118,7 +118,7 @@ class AuthService
     {
         try {
             return $this->registry->lookup($kennitala);
-        } catch (RuntimeException $e) {
+        } catch (NationalRegistryUnavailableException $e) {
             throw new LoginException($e->getMessage(), 503);
         }
     }
