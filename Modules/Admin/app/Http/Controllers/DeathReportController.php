@@ -36,6 +36,7 @@ class DeathReportController extends Controller
         if ($user->status !== User::STATUS_DECEASED) {
             $user->forceFill([
                 'status' => User::STATUS_DECEASED,
+                'is_alive' => false,
                 'deceased_at' => now(),
                 'deceased_confirmed_by' => $actor->id,
                 'deceased_source' => 'relative_report',

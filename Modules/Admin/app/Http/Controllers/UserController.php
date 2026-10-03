@@ -50,6 +50,7 @@ class UserController extends Controller
 
             $user->forceFill([
                 'status' => $data['status'],
+                'is_alive' => false,
                 'deceased_at' => now(),
                 'deceased_confirmed_by' => Auth::guard('web')->id(),
                 'deceased_source' => 'admin_manual',
@@ -62,6 +63,7 @@ class UserController extends Controller
                 ->log('user.marked_deceased');
         } else {
             $user->update(['status' => $data['status']]);
+            $user->forceFill(['is_alive' => $data['status'] !== User::STATUS_DECEASED])->save();
         }
 
         return back()->with('status', 'User status updated.');

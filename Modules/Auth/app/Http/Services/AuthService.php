@@ -3,6 +3,7 @@
 namespace Modules\Auth\Http\Services;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
@@ -10,11 +11,15 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Modules\Auth\Exceptions\LoginException;
 use Modules\Auth\Models\UserEmail;
 use Modules\Auth\Models\UserPhone;
+use RuntimeException;
 
 class AuthService
 {
+    public function __construct(protected NationalRegistryService $registry) {}
+
     public function register(array $data): array
     {
         $user = User::query()->create([
@@ -33,15 +38,22 @@ class AuthService
     }
 
     /**
-     * Look the user up by kennitala or phone number and log them straight in.
+     * Look the user up by kennitala or phone number and check the national
+     * registry that the person is alive before logging them in.
      * No password, no OTP for now.
+     *
+     * Returns ['user', 'token'] for an existing account, or ['person'] with the
+     * registry details when the kennitala is valid and alive but not registered yet.
+     *
+     * @throws LoginException
      */
     public function login(array $data): array
     {
         $query = User::query();
 
         if (! empty($data['kennitala'])) {
-            $query->where('kennitala', $data['kennitala']);
+            $kennitala = preg_replace('/\D/', '', $data['kennitala']);
+            $query->whereIn('kennitala', [$kennitala, substr($kennitala, 0, 6).'-'.substr($kennitala, 6)]);
         } else {
             $query->where('phone_code', $data['phone_code'])
                 ->where('phone_number', $data['phone_number']);
@@ -49,13 +61,66 @@ class AuthService
 
         $user = $query->first();
 
-        if (! $user) {
-            throw new AuthenticationException('Doesn\'t match to any existing account.');
+        if ($user) {
+            return $this->loginExistingUser($user);
+        }
+
+        if (empty($data['kennitala'])) {
+            throw new LoginException('Doesn\'t match to any existing account.', 404);
+        }
+
+        $person = $this->lookupRegistry($data['kennitala']);
+
+        if (! $person['valid']) {
+            throw new LoginException('Kennitala (SSN) is not valid.', 422);
+        }
+
+        if ($person['deceased']) {
+            throw new LoginException('This person is already deceased. An account cannot be created.', 403);
+        }
+
+        return ['person' => $person['data']];
+    }
+
+    private function loginExistingUser(User $user): array
+    {
+        if ($user->status === User::STATUS_DECEASED) {
+            throw new LoginException('This person is already deceased. You cannot log in.', 403);
+        }
+
+        if ($user->kennitala) {
+            $person = $this->lookupRegistry($user->kennitala);
+
+            if ($person['valid'] && $person['deceased']) {
+                $user->forceFill([
+                    'status' => User::STATUS_DECEASED,
+                    'is_alive' => false,
+                    'deceased_at' => $person['deceased_at'] ? Carbon::parse($person['deceased_at']) : now(),
+                    'deceased_source' => 'taktikal',
+                    'life_status_checked_at' => now(),
+                ])->save();
+
+                activity()->performedOn($user)->log('user.marked_deceased');
+                $user->tokens()->update(['revoked' => true]);
+
+                throw new LoginException('This person is already deceased. You cannot log in.', 403);
+            }
+
+            $user->forceFill(['is_alive' => true, 'life_status_checked_at' => now()])->save();
         }
 
         $token = $user->createToken('FYRIRHYGGJA')->accessToken;
 
         return ['user' => $user, 'token' => $token];
+    }
+
+    private function lookupRegistry(string $kennitala): array
+    {
+        try {
+            return $this->registry->lookup($kennitala);
+        } catch (RuntimeException $e) {
+            throw new LoginException($e->getMessage(), 503);
+        }
     }
 
         public function login_bk(array $data): array

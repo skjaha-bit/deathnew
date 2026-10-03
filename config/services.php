@@ -41,6 +41,14 @@ return [
         'sender' => env('GATEWAYAPI_SENDER', 'FYRIRHYGGJA'),
     ],
 
+    'taktikal' => [
+        'url' => env('TAKTIKAL_URL', 'https://onboarding.taktikal.is/api'),
+        'company_key' => env('TAKTIKAL_COMPANY_KEY'),
+        'api_key' => env('TAKTIKAL_API_KEY'),
+        'webhook_secret' => env('TAKTIKAL_WEBHOOK_SECRET'),
+        'flow_key' => env('TAKTIKAL_FLOW_KEY'),
+    ],
+
     'otp' => [
         'length' => env('OTP_LENGTH', 6),
         'expiry_minutes' => env('OTP_EXPIRY_MINUTES', 5),

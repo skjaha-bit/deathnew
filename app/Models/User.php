@@ -69,6 +69,9 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'newsletter_opt_in' => 'boolean',
+            'is_alive' => 'boolean',
+            'life_status_checked_at' => 'datetime',
+            'deceased_at' => 'datetime',
         ];
     }
 

@@ -3,9 +3,9 @@
 namespace Modules\Auth\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Modules\Auth\Exceptions\LoginException;
 use Modules\Auth\Http\Requests\LoginRequest;
 use Modules\Auth\Http\Requests\RegisterRequest;
 use Modules\Auth\Http\Requests\UpdateProfileRequest;
@@ -35,11 +35,19 @@ class AuthController extends Controller
     {
         try {
             $result = $this->authService->login($request->validated());
-        } catch (AuthenticationException $e) {
-            return $this->error($e->getMessage(), 404);
+        } catch (LoginException $e) {
+            return $this->error($e->getMessage(), $e->status, $e->data);
+        }
+
+        if (! isset($result['user'])) {
+            return $this->success([
+                'registered' => false,
+                'person' => $result['person'],
+            ], 'Kennitala is valid. No account exists yet.');
         }
 
         return $this->success([
+            'registered' => true,
             'user' => $this->formatUser($result['user']),
             'token' => $result['token'],
             'token_type' => 'Bearer',
