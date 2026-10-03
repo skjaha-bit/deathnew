@@ -21,6 +21,11 @@ class NationalRegistryService
 
     private const DEATH_DATE_KEYS = ['deceasedDate', 'dateOfDeath', 'deathDate', 'diedAt'];
 
+    /** Birth date and nationality are opt-in on the Taktikal flow and may arrive top-level or in `meta`. */
+    private const BIRTH_DATE_KEYS = ['birthDate', 'dateOfBirth', 'birthday'];
+
+    private const NATIONALITY_KEYS = ['nationality', 'citizenship', 'countryOfCitizenship'];
+
     /**
      * @return array{valid: bool, deceased: bool, deceased_at: ?string, data: array}
      *
@@ -64,10 +69,18 @@ class NationalRegistryService
             return ['valid' => false, 'deceased' => false, 'deceased_at' => null, 'data' => []];
         }
 
-        $deceasedAt = collect(self::DEATH_DATE_KEYS)->map(fn ($key) => $body[$key] ?? null)->filter()->first();
+        $meta = $body['meta'] ?? [];
+        $birthDate = $this->firstValue($body, $meta, self::BIRTH_DATE_KEYS) ?? $this->birthDateFromKennitala($ssn);
+
+        $deceasedAt = $this->firstValue($body, $meta, self::DEATH_DATE_KEYS);
         $deceased = $deceasedAt !== null
-            || collect(self::DECEASED_FLAGS)->contains(fn ($key) => filter_var($body[$key] ?? false, FILTER_VALIDATE_BOOLEAN))
+            || collect(self::DECEASED_FLAGS)->contains(fn ($key) => filter_var($body[$key] ?? $meta[$key] ?? false, FILTER_VALIDATE_BOOLEAN))
             || in_array(strtolower((string) ($body['status'] ?? '')), ['deceased', 'dead', 'látinn'], true);
+
+        // The person lookup never flags death itself; Taktikal only exposes that through the PEP/sanctions watchlist.
+        if (! $deceased && config('services.taktikal.watchlist_deceased_check')) {
+            ['deceased' => $deceased, 'deceased_at' => $deceasedAt] = $this->watchlistDeceased($body['name'], $birthDate);
+        }
 
         return [
             'valid' => true,
@@ -79,9 +92,73 @@ class NationalRegistryService
                 'address' => $body['address'] ?? null,
                 'postal_code' => $body['postalCode'] ?? null,
                 'city' => $body['city'] ?? null,
+                'birth_date' => $birthDate,
+                'nationality' => $this->firstValue($body, $meta, self::NATIONALITY_KEYS),
+                'email' => $body['email'] ?? $meta['email'] ?? null,
+                'phone' => $body['phoneNumber'] ?? $meta['phoneNumber'] ?? null,
                 'registry_response' => $body,
             ],
         ];
+    }
+
+    /**
+     * PEP/sanctions lookup, the only Taktikal source that flags a person as deceased.
+     * Never blocks a login: if the watchlist is down we treat the person as alive.
+     *
+     * @return array{deceased: bool, deceased_at: ?string}
+     */
+    private function watchlistDeceased(string $name, ?string $birthDate): array
+    {
+        $alive = ['deceased' => false, 'deceased_at' => null];
+
+        try {
+            $response = Http::withBasicAuth(config('services.taktikal.company_key'), config('services.taktikal.api_key'))
+                ->acceptJson()
+                ->timeout(15)
+                ->post(rtrim(config('services.taktikal.url'), '/').'/watchlist/person/', array_filter([
+                    'countryCode' => 'IS',
+                    'originalName' => $name,
+                    'dateOfBirth' => $birthDate,
+                    'matchType' => 'Exact',
+                    'flowKey' => config('services.taktikal.flow_key'),
+                ]));
+        } catch (ConnectionException $e) {
+            $this->logError('Taktikal watchlist unreachable', ['message' => $e->getMessage()]);
+
+            return $alive;
+        }
+
+        if ($response->failed()) {
+            $this->logError('Taktikal watchlist lookup failed', ['status' => $response->status(), 'body' => $response->body()]);
+
+            return $alive;
+        }
+
+        // A same-name match is not enough: when both sides know the birth date they must agree.
+        $match = collect($response->json('match') ?? [])->first(fn ($m) => ($m['deceased'] ?? false)
+            && (! $birthDate || empty($m['dateOfBirth']) || str_starts_with($m['dateOfBirth'], $birthDate)));
+
+        return $match ? ['deceased' => true, 'deceased_at' => $match['deceasedDate'] ?? null] : $alive;
+    }
+
+    private function firstValue(array $body, array $meta, array $keys): ?string
+    {
+        return collect($keys)->map(fn ($key) => $body[$key] ?? $meta[$key] ?? null)->filter()->first();
+    }
+
+    /** A personal kennitala is DDMMYY-XXXC, where C is the century (9 = 1900s, 0 = 2000s, 8 = 1800s). */
+    private function birthDateFromKennitala(string $ssn): ?string
+    {
+        $century = ['8' => '18', '9' => '19', '0' => '20'][$ssn[9] ?? ''] ?? null;
+
+        if (strlen($ssn) !== 10 || ! $century) {
+            return null;
+        }
+
+        [$day, $month, $year] = [substr($ssn, 0, 2), substr($ssn, 2, 2), $century.substr($ssn, 4, 2)];
+
+        // Companies add 40 to the day, so they fail this check and get no birth date.
+        return checkdate((int) $month, (int) $day, (int) $year) ? "$year-$month-$day" : null;
     }
 
     /** A broken log file must never block a login. */
