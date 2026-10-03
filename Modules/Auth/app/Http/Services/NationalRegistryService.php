@@ -96,7 +96,7 @@ class NationalRegistryService
                 'nationality' => $this->firstValue($body, $meta, self::NATIONALITY_KEYS),
                 'email' => $body['email'] ?? $meta['email'] ?? null,
                 'phone' => $body['phoneNumber'] ?? $meta['phoneNumber'] ?? null,
-                'registry_response' => $body,
+                
             ],
         ];
     }
