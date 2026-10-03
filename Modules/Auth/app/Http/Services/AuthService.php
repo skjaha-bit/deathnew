@@ -58,6 +58,28 @@ class AuthService
         return ['user' => $user, 'token' => $token];
     }
 
+        public function login_bk(array $data): array
+    {
+        $query = User::query();
+
+        if (! empty($data['kennitala'])) {
+            $query->where('kennitala', $data['kennitala']);
+        } else {
+            $query->where('phone_code', $data['phone_code'])
+                ->where('phone_number', $data['phone_number']);
+        }
+
+        $user = $query->first();
+
+        if (! $user) {
+            throw new AuthenticationException('Doesn\'t match to any existing account.');
+        }
+
+        $token = $user->createToken('FYRIRHYGGJA')->accessToken;
+
+        return ['user' => $user, 'token' => $token];
+    }
+
     public function logout(User $user): void
     {
         $user->token()?->revoke();
