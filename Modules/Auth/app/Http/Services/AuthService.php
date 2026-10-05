@@ -122,16 +122,25 @@ class AuthService
         }
 
         if ($person['deceased']) {
-            throw new LoginException('This person is already deceased. An account cannot be created.', 403);
+            throw new LoginException('This person is already deceased. An account cannot be created.', 403, $this->deathDetails($person['deceased_at']));
         }
 
         return $person['data'];
     }
 
+    /** What a 403 for a deceased person carries; the date is null when the registry gives none. */
+    private function deathDetails(mixed $deceasedAt): array
+    {
+        return [
+            'deceased' => true,
+            'deceased_at' => $deceasedAt ? Carbon::parse($deceasedAt)->toDateString() : null,
+        ];
+    }
+
     private function loginExistingUser(User $user): array
     {
         if ($user->status === User::STATUS_DECEASED) {
-            throw new LoginException('This person is already deceased. You cannot log in.', 403);
+            throw new LoginException('This person is already deceased. You cannot log in.', 403, $this->deathDetails($user->deceased_at));
         }
 
         if ($user->kennitala) {
@@ -149,7 +158,7 @@ class AuthService
                 activity()->performedOn($user)->log('user.marked_deceased');
                 $user->tokens()->update(['revoked' => true]);
 
-                throw new LoginException('This person is already deceased. You cannot log in.', 403);
+                throw new LoginException('This person is already deceased. You cannot log in.', 403, $this->deathDetails($person['deceased_at']));
             }
 
             $user->forceFill(['is_alive' => true, 'life_status_checked_at' => now()])->save();
