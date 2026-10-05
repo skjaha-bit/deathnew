@@ -6,6 +6,8 @@ use Modules\Auth\Http\Controllers\AuthController;
 Route::prefix('v1/auth')->group(function () {
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
+    Route::post('eid/start', [AuthController::class, 'electronicIdStart'])->middleware('throttle:10,1');
+    Route::post('eid/poll', [AuthController::class, 'electronicIdPoll'])->middleware('throttle:120,1');
 
     Route::middleware('auth:api')->group(function () {
         Route::post('logout', [AuthController::class, 'logout']);

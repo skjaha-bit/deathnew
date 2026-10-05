@@ -6,6 +6,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Auth\Exceptions\LoginException;
+use Modules\Auth\Http\Requests\ElectronicIdPollRequest;
+use Modules\Auth\Http\Requests\ElectronicIdStartRequest;
 use Modules\Auth\Http\Requests\LoginRequest;
 use Modules\Auth\Http\Requests\RegisterRequest;
 use Modules\Auth\Http\Requests\UpdateProfileRequest;
@@ -39,11 +41,43 @@ class AuthController extends Controller
             return $this->error($e->getMessage(), $e->status, $e->data);
         }
 
+        return $this->loginResponse($result);
+    }
+
+    public function electronicIdStart(ElectronicIdStartRequest $request)
+    {
+        try {
+            $result = $this->authService->startElectronicId($request->validated());
+        } catch (LoginException $e) {
+            return $this->error($e->getMessage(), $e->status, $e->data);
+        }
+
+        return $this->success($result, 'Confirm the sign-in on your phone. Check that it shows the same verification code.');
+    }
+
+    public function electronicIdPoll(ElectronicIdPollRequest $request)
+    {
+        try {
+            $result = $this->authService->completeElectronicId($request->validated('auth_request_id'));
+        } catch (LoginException $e) {
+            return $this->error($e->getMessage(), $e->status, $e->data);
+        }
+
+        if (isset($result['pending'])) {
+            return $this->success(['pending' => true], 'Waiting for the person to confirm on their phone.', 202);
+        }
+
+        return $this->loginResponse($result);
+    }
+
+    private function loginResponse(array $result)
+    {
         if (! isset($result['user'])) {
-            return $this->success([
+            return $this->success(array_filter([
                 'registered' => false,
                 'person' => $result['person'],
-            ], 'Kennitala is valid. No account exists yet.');
+                'registration_token' => $result['registration_token'] ?? null,
+            ], fn ($value) => $value !== null), 'Kennitala is valid. No account exists yet.');
         }
 
         return $this->success([

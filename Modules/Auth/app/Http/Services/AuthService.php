@@ -11,14 +11,22 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Modules\Auth\Exceptions\ElectronicIdException;
 use Modules\Auth\Exceptions\LoginException;
 use Modules\Auth\Exceptions\NationalRegistryUnavailableException;
 use Modules\Auth\Models\UserEmail;
 use Modules\Auth\Models\UserPhone;
+use Modules\Auth\Support\RegistrationToken;
 
 class AuthService
 {
-    public function __construct(protected NationalRegistryService $registry) {}
+    /** Auðkenni only issues electronic IDs on Icelandic numbers. */
+    private const ELECTRONIC_ID_PHONE_CODE = '+354';
+
+    public function __construct(
+        protected NationalRegistryService $registry,
+        protected ElectronicIdService $electronicId,
+    ) {}
 
     public function register(array $data): array
     {
@@ -52,14 +60,12 @@ class AuthService
         $query = User::query();
 
         if (! empty($data['kennitala'])) {
-            $kennitala = preg_replace('/\D/', '', $data['kennitala']);
-            $query->whereIn('kennitala', [$kennitala, substr($kennitala, 0, 6).'-'.substr($kennitala, 6)]);
+            $user = $this->findByKennitala($data['kennitala']);
         } else {
-            $query->where('phone_code', $data['phone_code'])
-                ->where('phone_number', $data['phone_number']);
+            $user = $query->where('phone_code', $data['phone_code'])
+                ->where('phone_number', $data['phone_number'])
+                ->first();
         }
-
-        $user = $query->first();
 
         if ($user) {
             return $this->loginExistingUser($user);
@@ -69,7 +75,80 @@ class AuthService
             throw new LoginException('Doesn\'t match to any existing account.', 404);
         }
 
-        $person = $this->lookupRegistry($data['kennitala']);
+        return ['person' => $this->unregisteredPerson($data['kennitala'])];
+    }
+
+    /**
+     * Send an electronic ID (Auðkenni) prompt to the person's phone.
+     *
+     * @throws LoginException
+     */
+    public function startElectronicId(array $data): array
+    {
+        try {
+            return $this->electronicId->start($data['kennitala'] ?? null, $data['phone_number'] ?? null, $data['context'] ?? 'Sim');
+        } catch (ElectronicIdException $e) {
+            throw new LoginException($e->getMessage(), $e->status);
+        }
+    }
+
+    /**
+     * Check an electronic ID sign-in. Returns ['pending' => true] until the person
+     * approves, then the same shapes as login(). For a new person the registry
+     * details come back with the phone number they just proved they own.
+     *
+     * @throws LoginException
+     */
+    public function completeElectronicId(string $authRequestId): array
+    {
+        try {
+            $identity = $this->electronicId->poll($authRequestId);
+        } catch (ElectronicIdException $e) {
+            throw new LoginException($e->getMessage(), $e->status);
+        }
+
+        if (! $identity) {
+            return ['pending' => true];
+        }
+
+        $user = $this->findByKennitala($identity['kennitala']);
+
+        if ($user) {
+            return $this->loginExistingUser($user);
+        }
+
+        $person = $this->unregisteredPerson($identity['kennitala']);
+        $phoneCode = $identity['phone_number'] ? self::ELECTRONIC_ID_PHONE_CODE : null;
+
+        return [
+            'person' => array_merge($person, [
+                'email' => $person['email'] ?? $identity['email'],
+                'phone' => $identity['phone_number'],
+                'phone_code' => $phoneCode,
+                'phone_number' => $identity['phone_number'],
+                'phone_verified' => (bool) $identity['phone_number'],
+            ]),
+            'registration_token' => RegistrationToken::issue([
+                'kennitala' => $identity['kennitala'],
+                'phone_code' => $phoneCode,
+                'phone_number' => $identity['phone_number'],
+            ]),
+        ];
+    }
+
+    private function findByKennitala(string $kennitala): ?User
+    {
+        $kennitala = preg_replace('/\D/', '', $kennitala);
+
+        return User::query()
+            ->whereIn('kennitala', [$kennitala, substr($kennitala, 0, 6).'-'.substr($kennitala, 6)])
+            ->first();
+    }
+
+    /** Registry details for a kennitala with no account yet; refuses invalid and deceased people. */
+    private function unregisteredPerson(string $kennitala): array
+    {
+        $person = $this->lookupRegistry($kennitala);
 
         if (! $person['valid']) {
             throw new LoginException('Kennitala (SSN) is not valid.', 422);
@@ -79,7 +158,7 @@ class AuthService
             throw new LoginException('This person is already deceased. An account cannot be created.', 403);
         }
 
-        return ['person' => $person['data']];
+        return $person['data'];
     }
 
     private function loginExistingUser(User $user): array
