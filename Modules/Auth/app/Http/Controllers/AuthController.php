@@ -33,15 +33,10 @@ class AuthController extends Controller
         ], 'Registration successful.', 201);
     }
 
+    /** Kept for older clients: logging in now always goes through electronic ID, see eid/poll. */
     public function login(LoginRequest $request)
     {
-        try {
-            $result = $this->authService->login($request->validated());
-        } catch (LoginException $e) {
-            return $this->error($e->getMessage(), $e->status, $e->data);
-        }
-
-        return $this->loginResponse($result);
+        return $this->electronicIdStart($request);
     }
 
     public function electronicIdStart(ElectronicIdStartRequest $request)

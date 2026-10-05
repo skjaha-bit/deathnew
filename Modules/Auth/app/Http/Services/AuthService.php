@@ -46,39 +46,6 @@ class AuthService
     }
 
     /**
-     * Look the user up by kennitala or phone number and check the national
-     * registry that the person is alive before logging them in.
-     * No password, no OTP for now.
-     *
-     * Returns ['user', 'token'] for an existing account, or ['person'] with the
-     * registry details when the kennitala is valid and alive but not registered yet.
-     *
-     * @throws LoginException
-     */
-    public function login(array $data): array
-    {
-        $query = User::query();
-
-        if (! empty($data['kennitala'])) {
-            $user = $this->findByKennitala($data['kennitala']);
-        } else {
-            $user = $query->where('phone_code', $data['phone_code'])
-                ->where('phone_number', $data['phone_number'])
-                ->first();
-        }
-
-        if ($user) {
-            return $this->loginExistingUser($user);
-        }
-
-        if (empty($data['kennitala'])) {
-            throw new LoginException('Doesn\'t match to any existing account.', 404);
-        }
-
-        return ['person' => $this->unregisteredPerson($data['kennitala'])];
-    }
-
-    /**
      * Send an electronic ID (Auðkenni) prompt to the person's phone.
      *
      * @throws LoginException
@@ -94,8 +61,8 @@ class AuthService
 
     /**
      * Check an electronic ID sign-in. Returns ['pending' => true] until the person
-     * approves, then the same shapes as login(). For a new person the registry
-     * details come back with the phone number they just proved they own.
+     * approves, then ['user', 'token'] for an existing account (after the deceased
+     * check), or ['person', 'registration_token'] for someone not registered yet.
      *
      * @throws LoginException
      */

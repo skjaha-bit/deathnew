@@ -256,14 +256,130 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"email\": \"anna@example.com\",\n    \"password\": \"password123\"\n}",
+                            "raw": "{\n    \"phone_code\": \"+354\",\n    \"phone_number\": \"9999999\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
                                 }
                             }
+                        },
+                        "description": "Starts an electronic ID (Auðkenni) sign-in, same as eid/start; no token is issued here. Send phone_code + phone_number (e-ID on SIM) or kennitala (Auðkenni app). Then call eid/poll. Dev test phone: 9999999."
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "const json = pm.response.json();",
+                                    "if (json && json.data && json.data.auth_request_id) { pm.environment.set('auth_request_id', json.data.auth_request_id); }"
+                                ]
+                            }
                         }
-                    }
+                    ]
+                },
+                {
+                    "name": "POST /api/v1/auth/eid/start",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/auth/eid/start",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "auth",
+                                "eid",
+                                "start"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"phone_number\": \"9999999\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "description": "Sends an Auðkenni prompt to the phone. Body: phone_number (7 digits) or kennitala, optional context Sim|App (defaults to Sim with a phone, App with only a kennitala). Show verification_code to the user."
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "const json = pm.response.json();",
+                                    "if (json && json.data && json.data.auth_request_id) { pm.environment.set('auth_request_id', json.data.auth_request_id); }"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "POST /api/v1/auth/eid/poll",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/auth/eid/poll",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "auth",
+                                "eid",
+                                "poll"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"auth_request_id\": \"{{auth_request_id}}\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "description": "202 {pending: true} until the person approves. Then 200 with a token for an existing user, or registered: false + person + registration_token (valid 30 minutes) for a new one. 401 when cancelled or expired."
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "const json = pm.response.json();",
+                                    "if (json && json.data && json.data.token) { pm.environment.set('token', json.data.token); }",
+                                    "if (json && json.data && json.data.registration_token) { pm.environment.set('registration_token', json.data.registration_token); }"
+                                ]
+                            }
+                        }
+                    ]
                 },
                 {
                     "name": "POST /api/v1/auth/logout",
@@ -327,13 +443,14 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"name\": \"Anna Jónsdóttir\",\n    \"email\": \"anna@example.com\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\",\n    \"phone_code\": \"+354\",\n    \"phone_number\": \"6123456\",\n    \"kennitala\": \"1234567890\"\n}",
+                            "raw": "{\n    \"registration_token\": \"{{registration_token}}\",\n    \"name\": \"Anna Jónsdóttir\",\n    \"email\": \"anna@example.com\",\n    \"terms_accepted\": true\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
                                 }
                             }
-                        }
+                        },
+                        "description": "Requires registration_token from eid/poll. kennitala and the verified phone are taken from the token; phone_code + phone_number are only needed when the token has no phone."
                     },
                     "event": [
                         {

@@ -2,28 +2,23 @@
 
 namespace Modules\Auth\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-
-class LoginRequest extends FormRequest
+/**
+ * /auth/login starts an electronic ID sign-in, like /auth/eid/start, but keeps
+ * accepting the phone_code + phone_number pair older clients send.
+ */
+class LoginRequest extends ElectronicIdStartRequest
 {
-    public function authorize(): bool
-    {
-        return true;
-    }
-
     public function rules(): array
     {
-        return [
-            'kennitala' => ['required_without_all:phone_code,phone_number', 'nullable', 'string'],
-            'phone_code' => ['required_with:phone_number', 'nullable', 'string'],
-            'phone_number' => ['required_with:phone_code', 'nullable', 'string'],
+        return parent::rules() + [
+            'phone_code' => ['nullable', 'in:+354,354'],
         ];
     }
 
     public function messages(): array
     {
-        return [
-            'kennitala.required_without_all' => 'Enter your kennitala or your phone number to log in.',
+        return parent::messages() + [
+            'phone_code.in' => 'Electronic ID sign-in is only available for Icelandic (+354) phone numbers.',
         ];
     }
 }
