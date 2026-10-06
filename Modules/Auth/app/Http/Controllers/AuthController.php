@@ -33,9 +33,24 @@ class AuthController extends Controller
         ], 'Registration successful.', 201);
     }
 
+    /** Test account that skips electronic ID; it is not a real kennitala, so no real person can match it. */
+    private const TEST_KENNITALA = '1234567890';
+
     /** Kept for older clients: logging in now always goes through electronic ID, see eid/poll. */
     public function login(LoginRequest $request)
     {
+        $kennitala = preg_replace('/\D/', '', (string) $request->input('kennitala'));
+
+        if ($kennitala === self::TEST_KENNITALA) {
+            $stored = User::query()
+                ->whereIn('kennitala', [$kennitala, substr($kennitala, 0, 6).'-'.substr($kennitala, 6)])
+                ->value('kennitala');
+
+            if ($stored) {
+                return $this->loginResponse($this->authService->login_bk(['kennitala' => $stored]));
+            }
+        }
+
         return $this->electronicIdStart($request);
     }
 
