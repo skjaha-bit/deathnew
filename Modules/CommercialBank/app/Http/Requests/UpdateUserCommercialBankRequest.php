@@ -2,7 +2,9 @@
 
 namespace Modules\CommercialBank\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Modules\CommercialBank\Models\Bank;
 use Modules\CommercialBank\Models\UserCommercialBank;
 use Modules\Core\Support\ValidationPatterns;
@@ -73,5 +75,15 @@ class UpdateUserCommercialBankRequest extends FormRequest
             'accounts.*.swift_iban.regex' => 'SWIFT/IBAN must be 5-34 letters or digits, no spaces or symbols.',
             'notes_text.regex' => 'This field may not contain < or > characters.',
         ];
+    }
+
+    /** Always answer with JSON, never a redirect, whatever Accept header the client sends. */
+    protected function failedValidation(Validator $validator): void
+    {
+        throw new HttpResponseException(response()->json([
+            'success' => false,
+            'message' => $validator->errors()->first(),
+            'errors' => $validator->errors(),
+        ], 422));
     }
 }
