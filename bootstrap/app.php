@@ -21,5 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->redirectGuestsTo('/admin/login');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        // API errors (validation, auth, 404...) are always JSON, even without an Accept header,
+        // instead of redirecting to the website's home page.
+        $exceptions->shouldRenderJsonWhen(fn ($request) => $request->is('api/*') || $request->expectsJson());
     })->create();

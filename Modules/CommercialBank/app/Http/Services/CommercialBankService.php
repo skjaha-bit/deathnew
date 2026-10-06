@@ -35,7 +35,7 @@ class CommercialBankService
             $bank = UserCommercialBank::query()->create([
                 'user_id' => $userId,
                 'bank_id' => $data['bank_id'] ?? null,
-                'swift' => $this->swiftFor($data['bank_id'] ?? null, $data['swift'] ?? null),
+                'swift' => $this->normalizeSwift($data['swift'] ?? null),
                 'loan_type_id' => $data['loan_type_id'] ?? null,
                 'bank_vault' => $data['bank_vault'] ?? false,
                 'notes_text' => $data['notes_text'] ?? null,
@@ -52,11 +52,9 @@ class CommercialBankService
     public function update(UserCommercialBank $bank, array $data): UserCommercialBank
     {
         return DB::transaction(function () use ($bank, $data) {
-            $bankId = $data['bank_id'] ?? $bank->bank_id;
-
             $bank->update([
-                'bank_id' => $bankId,
-                'swift' => $this->swiftFor($bankId, $data['swift'] ?? $bank->swift),
+                'bank_id' => $data['bank_id'] ?? $bank->bank_id,
+                'swift' => array_key_exists('swift', $data) ? $this->normalizeSwift($data['swift']) : $bank->swift,
                 'loan_type_id' => $data['loan_type_id'] ?? $bank->loan_type_id,
                 'bank_vault' => $data['bank_vault'] ?? $bank->bank_vault,
                 'notes_text' => $data['notes_text'] ?? $bank->notes_text,
@@ -111,10 +109,10 @@ class CommercialBankService
         return FundType::query()->where('is_active', true)->get(['id', 'name']);
     }
 
-    /** A SWIFT code is only kept for the bank that asks for one; any other bank clears it. */
-    protected function swiftFor(?int $bankId, ?string $swift): ?string
+    /** SWIFT codes are stored upper-case; an empty value is stored as null. */
+    protected function normalizeSwift(?string $swift): ?string
     {
-        return $bankId === Bank::SWIFT_REQUIRED_ID && $swift ? strtoupper($swift) : null;
+        return filled($swift) ? strtoupper($swift) : null;
     }
 
     protected function syncAccounts(UserCommercialBank $bank, array $accounts): void
