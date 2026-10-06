@@ -92,6 +92,8 @@ class CommercialBankController extends Controller
 
     public function update(UpdateUserCommercialBankRequest $request)
     {
+        echo 'test'; exit; // DEBUG: remove after checking
+
         $data = $request->validated();
 
         $userCommercialBank = UserCommercialBank::query()->findOrFail($data['id']);
