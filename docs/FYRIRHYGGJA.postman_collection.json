@@ -91,7 +91,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"preference\": \"yes\",\n    \"obituary_media_preference\": \"Morgunblaðið\",\n    \"symbol\": \"cross\",\n    \"job_title\": \"Retired teacher\",\n    \"home_address\": \"Reykjavík\",\n    \"date_of_birth\": \"1950-01-01\",\n    \"body_text\": \"Loving mother and grandmother...\",\n    \"alignment\": \"left\",\n    \"layout\": \"single\",\n    \"relatives\": [\n        {\n            \"name\": \"Jón Jónsson\",\n            \"column_position\": 1,\n            \"sort_order\": 1\n        }\n    ]\n}",
+                            "raw": "{\n    \"preference\": \"yes\",\n    \"obituary_media_preference\": \"Morgunbla\u00f0i\u00f0\",\n    \"symbol\": \"cross\",\n    \"job_title\": \"Retired teacher\",\n    \"home_address\": \"Reykjav\u00edk\",\n    \"date_of_birth\": \"1950-01-01\",\n    \"body_text\": \"Loving mother and grandmother...\",\n    \"alignment\": \"left\",\n    \"layout\": \"single\",\n    \"relatives\": [\n        {\n            \"name\": \"J\u00f3n J\u00f3nsson\",\n            \"column_position\": 1,\n            \"sort_order\": 1\n        }\n    ]\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -214,7 +214,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"ceremony\": \"Church service\",\n    \"arrangement\": \"Burial\",\n    \"location\": \"Hallgrímskirkja\",\n    \"laying_place\": \"Fossvogskirkjugarður\",\n    \"coffin_decorations\": true,\n    \"coffin_decorations_detail\": \"White flowers\",\n    \"charity_case\": \"Barnaspítali Hringsins\",\n    \"music\": [\n        {\n            \"description\": \"Ave Maria - live performance\",\n            \"sort_order\": 1\n        }\n    ]\n}",
+                            "raw": "{\n    \"ceremony\": \"Church service\",\n    \"arrangement\": \"Burial\",\n    \"location\": \"Hallgr\u00edmskirkja\",\n    \"laying_place\": \"Fossvogskirkjugar\u00f0ur\",\n    \"coffin_decorations\": true,\n    \"coffin_decorations_detail\": \"White flowers\",\n    \"charity_case\": \"Barnasp\u00edtali Hringsins\",\n    \"music\": [\n        {\n            \"description\": \"Ave Maria - live performance\",\n            \"sort_order\": 1\n        }\n    ]\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -263,7 +263,7 @@
                                 }
                             }
                         },
-                        "description": "Starts an electronic ID (Auðkenni) sign-in, same as eid/start; no token is issued here. Send phone_code + phone_number (e-ID on SIM) or kennitala (Auðkenni app). Then call eid/poll. Dev test phone: 9999999."
+                        "description": "Starts an electronic ID (Au\u00f0kenni) sign-in, same as eid/start; no token is issued here. Send phone_code + phone_number (e-ID on SIM) or kennitala (Au\u00f0kenni app). Then call eid/poll. Dev test phone: 9999999."
                     },
                     "event": [
                         {
@@ -314,7 +314,7 @@
                                 }
                             }
                         },
-                        "description": "Sends an Auðkenni prompt to the phone. Body: phone_number (7 digits) or kennitala, optional context Sim|App (defaults to Sim with a phone, App with only a kennitala). Show verification_code to the user."
+                        "description": "Sends an Au\u00f0kenni prompt to the phone. Body: phone_number (7 digits) or kennitala, optional context Sim|App (defaults to Sim with a phone, App with only a kennitala). Show verification_code to the user."
                     },
                     "event": [
                         {
@@ -443,7 +443,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"registration_token\": \"{{registration_token}}\",\n    \"name\": \"Anna Jónsdóttir\",\n    \"email\": \"anna@example.com\",\n    \"terms_accepted\": true\n}",
+                            "raw": "{\n    \"registration_token\": \"{{registration_token}}\",\n    \"name\": \"Anna J\u00f3nsd\u00f3ttir\",\n    \"email\": \"anna@example.com\",\n    \"terms_accepted\": true\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -621,7 +621,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"name\": \"Anna Jónsdóttir\",\n    \"email\": \"anna@example.com\",\n    \"phone_code\": \"+354\",\n    \"phone_number\": \"6123456\",\n    \"kennitala\": \"1234567890\",\n    \"preferred_language_id\": 1\n}",
+                            "raw": "{\n    \"name\": \"Anna J\u00f3nsd\u00f3ttir\",\n    \"email\": \"anna@example.com\",\n    \"phone_code\": \"+354\",\n    \"phone_number\": \"6123456\",\n    \"kennitala\": \"1234567890\",\n    \"preferred_language_id\": 1\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -2232,6 +2232,46 @@
                     }
                 },
                 {
+                    "name": "GET /api/v1/relatives/lookup (check SSN, get name)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/relatives/lookup?kennitala=0101901234",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "relatives",
+                                "lookup"
+                            ],
+                            "query": [
+                                {
+                                    "key": "kennitala",
+                                    "value": "0101901234"
+                                }
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
                     "name": "POST /api/v1/relatives",
                     "request": {
                         "method": "POST",
@@ -2268,7 +2308,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"name\": \"Jón Jónsson\",\n    \"email\": \"jon@example.com\",\n    \"phone\": \"6119999\",\n    \"relation\": \"spouse\",\n    \"permissions\": [\n        \"pension\",\n        \"insurance\",\n        \"funeral\"\n    ]\n}",
+                            "raw": "{\n    \"name\": \"J\u00f3n J\u00f3nsson\",\n    \"kennitala\": \"010190-1234\",\n    \"relation\": \"Brother\",\n    \"phones\": [\n        {\n            \"phone_code\": \"+354\",\n            \"phone_number\": \"6119999\"\n        },\n        {\n            \"phone_code\": \"+354\",\n            \"phone_number\": \"5551234\"\n        }\n    ],\n    \"emails\": [\n        \"jon@example.com\",\n        \"jon.work@example.com\"\n    ],\n    \"read_access_after_death\": true,\n    \"estate_agent_notes\": \"My brother knows my finances well and has agreed to act as estate agent.\",\n    \"personal_affairs_notes\": \"Please let him handle the funeral arrangements and contact with other relatives.\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -2312,9 +2352,9 @@
                     }
                 },
                 {
-                    "name": "PUT /api/v1/relatives/1",
+                    "name": "POST /api/v1/relatives/update",
                     "request": {
-                        "method": "PUT",
+                        "method": "POST",
                         "header": [
                             {
                                 "key": "Accept",
@@ -2326,7 +2366,7 @@
                             }
                         ],
                         "url": {
-                            "raw": "{{base_url}}/api/v1/relatives/1",
+                            "raw": "{{base_url}}/api/v1/relatives/update",
                             "host": [
                                 "{{base_url}}"
                             ],
@@ -2334,7 +2374,7 @@
                                 "api",
                                 "v1",
                                 "relatives",
-                                "1"
+                                "update"
                             ]
                         },
                         "auth": {
@@ -2349,7 +2389,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"name\": \"Jón Jónsson\",\n    \"email\": \"jon@example.com\",\n    \"phone\": \"6119999\",\n    \"relation\": \"spouse\",\n    \"permissions\": [\n        \"pension\",\n        \"insurance\"\n    ]\n}",
+                            "raw": "{\n    \"id\": 1,\n    \"name\": \"J\u00f3n J\u00f3nsson\",\n    \"kennitala\": \"010190-1234\",\n    \"relation\": \"Brother\",\n    \"phones\": [\n        {\n            \"phone_code\": \"+354\",\n            \"phone_number\": \"6119999\"\n        },\n        {\n            \"phone_code\": \"+354\",\n            \"phone_number\": \"5551234\"\n        }\n    ],\n    \"emails\": [\n        \"jon@example.com\",\n        \"jon.work@example.com\"\n    ],\n    \"read_access_after_death\": true,\n    \"estate_agent_notes\": \"My brother knows my finances well and has agreed to act as estate agent.\",\n    \"personal_affairs_notes\": \"Please let him handle the funeral arrangements and contact with other relatives.\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -2359,9 +2399,9 @@
                     }
                 },
                 {
-                    "name": "DELETE /api/v1/relatives/1",
+                    "name": "POST /api/v1/relatives/1/delete",
                     "request": {
-                        "method": "DELETE",
+                        "method": "POST",
                         "header": [
                             {
                                 "key": "Accept",
@@ -2369,7 +2409,7 @@
                             }
                         ],
                         "url": {
-                            "raw": "{{base_url}}/api/v1/relatives/1",
+                            "raw": "{{base_url}}/api/v1/relatives/1/delete",
                             "host": [
                                 "{{base_url}}"
                             ],
@@ -2377,7 +2417,8 @@
                                 "api",
                                 "v1",
                                 "relatives",
-                                "1"
+                                "1",
+                                "delete"
                             ]
                         },
                         "auth": {
@@ -2399,10 +2440,6 @@
                         "header": [
                             {
                                 "key": "Accept",
-                                "value": "application/json"
-                            },
-                            {
-                                "key": "Content-Type",
                                 "value": "application/json"
                             }
                         ],
@@ -2428,15 +2465,6 @@
                                     "type": "string"
                                 }
                             ]
-                        },
-                        "body": {
-                            "mode": "raw",
-                            "raw": "[]",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
                         }
                     }
                 }
@@ -2657,7 +2685,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"trade_union_id\": 1,\n    \"union_name\": \"Kennarasamband Íslands\",\n    \"from_month\": \"01\",\n    \"from_year\": \"2015\",\n    \"still_in_payment\": true,\n    \"department_contact\": \"Reykjavík office\",\n    \"rights_text\": \"Funeral grant\",\n    \"notes_text\": \"None\"\n}",
+                            "raw": "{\n    \"trade_union_id\": 1,\n    \"union_name\": \"Kennarasamband \u00cdslands\",\n    \"from_month\": \"01\",\n    \"from_year\": \"2015\",\n    \"still_in_payment\": true,\n    \"department_contact\": \"Reykjav\u00edk office\",\n    \"rights_text\": \"Funeral grant\",\n    \"notes_text\": \"None\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -2738,7 +2766,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"id\": 1,\n    \"trade_union_id\": 1,\n    \"union_name\": \"Kennarasamband Íslands\",\n    \"from_month\": \"01\",\n    \"from_year\": \"2015\",\n    \"still_in_payment\": true\n}",
+                            "raw": "{\n    \"id\": 1,\n    \"trade_union_id\": 1,\n    \"union_name\": \"Kennarasamband \u00cdslands\",\n    \"from_month\": \"01\",\n    \"from_year\": \"2015\",\n    \"still_in_payment\": true\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
