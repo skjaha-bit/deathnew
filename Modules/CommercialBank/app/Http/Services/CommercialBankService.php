@@ -62,7 +62,7 @@ class CommercialBankService
 
             if (array_key_exists('accounts', $data)) {
                 $bank->accounts()->delete();
-                $this->syncAccounts($bank, $data['accounts'] ?? []);
+                $this->syncAccounts($bank, $data['accounts'] ?? []); 
             }
 
             if (array_key_exists('bonds', $data)) {
