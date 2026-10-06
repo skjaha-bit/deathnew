@@ -3,6 +3,7 @@
 namespace Modules\Relatives\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Modules\Core\Support\ValidationPatterns;
 
 class UpdateRelativeRequest extends FormRequest
@@ -12,13 +13,34 @@ class UpdateRelativeRequest extends FormRequest
         return true;
     }
 
+    /** Store the kennitala as digits only, so 010190-1234 and 0101901234 count as the same person. */
+    protected function prepareForValidation(): void
+    {
+        if (is_string($this->kennitala) && preg_match(ValidationPatterns::KENNITALA, $this->kennitala)) {
+            $this->merge(['kennitala' => preg_replace('/\D/', '', $this->kennitala)]);
+        }
+    }
+
     public function rules(): array
     {
         return [
+            'id' => ['required', 'integer', 'exists:relatives,id'],
             'name' => ['sometimes', 'required', 'string', 'max:255', 'regex:'.ValidationPatterns::NAME],
-            'email' => ['sometimes', 'nullable', 'string', 'email:rfc,filter', 'max:255'],
-            'phone' => ['sometimes', 'nullable', 'string', 'max:20', 'regex:/^\+?[0-9\s\-]{4,20}$/'],
+            'kennitala' => [
+                'sometimes', 'nullable', 'string', 'regex:'.ValidationPatterns::KENNITALA,
+                Rule::unique('relatives', 'kennitala')
+                    ->where('user_id', $this->user()->id)
+                    ->ignore((int) $this->input('id')),
+            ],
             'relation' => ['sometimes', 'nullable', 'string', 'max:255', 'regex:'.ValidationPatterns::NAME],
+            'read_access_after_death' => ['sometimes', 'nullable', 'boolean'],
+            'estate_agent_notes' => ['sometimes', 'nullable', 'string', 'max:2000', 'regex:'.ValidationPatterns::SAFE_TEXT],
+            'personal_affairs_notes' => ['sometimes', 'nullable', 'string', 'max:2000', 'regex:'.ValidationPatterns::SAFE_TEXT],
+            'emails' => ['sometimes', 'array'],
+            'emails.*' => ['string', 'email:rfc,filter', 'max:255', 'distinct'],
+            'phones' => ['sometimes', 'array'],
+            'phones.*.phone_code' => ['required_with:phones', 'string', 'max:8', 'regex:'.ValidationPatterns::PHONE_CODE],
+            'phones.*.phone_number' => ['required_with:phones', 'string', 'max:20', 'regex:'.ValidationPatterns::PHONE_NUMBER],
             'permissions' => ['sometimes', 'nullable', 'array'],
             'permissions.*' => ['string', 'regex:'.ValidationPatterns::CODE],
         ];
@@ -28,8 +50,13 @@ class UpdateRelativeRequest extends FormRequest
     {
         return [
             'name.regex' => 'The name may only contain letters, spaces, apostrophes, hyphens and periods.',
+            'kennitala.regex' => 'The ID number must be a valid kennitala, e.g. 010190-1234.',
+            'kennitala.unique' => 'You have already added this member.',
             'relation.regex' => 'The relation may only contain letters and spaces.',
-            'phone.regex' => 'The phone number format is invalid.',
+            'estate_agent_notes.regex' => 'The notes may not contain < or >.',
+            'personal_affairs_notes.regex' => 'The notes may not contain < or >.',
+            'phones.*.phone_code.regex' => 'The phone code must be a valid dialing code, e.g. +354.',
+            'phones.*.phone_number.regex' => 'The phone number may only contain digits.',
         ];
     }
 }

@@ -13,9 +13,10 @@ Route::post('v1/death-reports', [DeathReportController::class, 'store']);
 Route::prefix('v1/relatives')->middleware('auth:api')->group(function () {
     Route::get('/', [RelativeController::class, 'index']);
     Route::post('/', [RelativeController::class, 'store']);
+    Route::get('lookup', [RelativeController::class, 'lookup'])->middleware('throttle:30,1');
+    Route::post('update', [RelativeController::class, 'update']);
     Route::get('{relative}', [RelativeController::class, 'show']);
-    Route::put('{relative}', [RelativeController::class, 'update']);
-    Route::delete('{relative}', [RelativeController::class, 'destroy']);
+    Route::post('{relative}/delete', [RelativeController::class, 'destroy']);
     Route::post('{relative}/invite', [RelativeController::class, 'invite']);
 });
 

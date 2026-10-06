@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(scp -i \"/d/death project documnet/open SSH FOR VS\" *)"
+      "Bash(scp -i \"/d/death project documnet/open SSH FOR VS\" *)",
+      "Bash(ssh -i * devmarkus@93.95.227.117 *)"
     ]
   }
 }
