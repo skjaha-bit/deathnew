@@ -52,28 +52,22 @@ class CommercialBankService
     public function update(UserCommercialBank $bank, array $data): UserCommercialBank
     {
         return DB::transaction(function () use ($bank, $data) {
+            // Same fields as create: the body replaces the whole record.
             $bank->update([
-                'bank_id' => $data['bank_id'] ?? $bank->bank_id,
-                'swift' => array_key_exists('swift', $data) ? $this->normalizeSwift($data['swift']) : $bank->swift,
-                'loan_type_id' => $data['loan_type_id'] ?? $bank->loan_type_id,
-                'bank_vault' => $data['bank_vault'] ?? $bank->bank_vault,
-                'notes_text' => $data['notes_text'] ?? $bank->notes_text,
+                'bank_id' => $data['bank_id'] ?? null,
+                'swift' => $this->normalizeSwift($data['swift'] ?? null),
+                'loan_type_id' => $data['loan_type_id'] ?? null,
+                'bank_vault' => $data['bank_vault'] ?? false,
+                'notes_text' => $data['notes_text'] ?? null,
             ]);
 
-            if (array_key_exists('accounts', $data)) {
-                $bank->accounts()->delete();
-                $this->syncAccounts($bank, $data['accounts'] ?? []); 
-            }
+            $bank->accounts()->delete();
+            $bank->bonds()->delete();
+            $bank->funds()->delete();
 
-            if (array_key_exists('bonds', $data)) {
-                $bank->bonds()->delete();
-                $this->syncBonds($bank, $data['bonds'] ?? []);
-            }
-
-            if (array_key_exists('funds', $data)) {
-                $bank->funds()->delete();
-                $this->syncFunds($bank, $data['funds'] ?? []);
-            }
+            $this->syncAccounts($bank, $data['accounts'] ?? []);
+            $this->syncBonds($bank, $data['bonds'] ?? []);
+            $this->syncFunds($bank, $data['funds'] ?? []);
 
             return $bank->fresh(self::WITH_RELATIONS);
         });
