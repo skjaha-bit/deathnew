@@ -12,6 +12,7 @@ class UserCommercialBank extends Model
     protected $fillable = [
         'user_id',
         'bank_id',
+        'swift',
         'loan_type_id',
         'bank_vault',
         'notes_text',
