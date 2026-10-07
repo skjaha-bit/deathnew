@@ -24,4 +24,11 @@ return Application::configure(basePath: dirname(__DIR__))
         // API errors (validation, auth, 404...) are always JSON, even without an Accept header,
         // instead of redirecting to the website's home page.
         $exceptions->shouldRenderJsonWhen(fn ($request) => $request->is('api/*') || $request->expectsJson());
+
+        // Request body exceeded PHP's post_max_size: return a clear JSON error instead of an empty 413.
+        $exceptions->render(fn (\Illuminate\Http\Exceptions\PostTooLargeException $e, $request) => response()->json([
+            'success' => false,
+            'message' => 'The uploaded file is too large. Maximum allowed size is '.ini_get('post_max_size').'.',
+            'errors' => null,
+        ], 413));
     })->create();
