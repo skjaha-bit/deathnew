@@ -21,13 +21,16 @@ class UpdateInsurancePolicyRequest extends FormRequest
             'type_ids.*' => ['integer', 'exists:insurance_types,id'],
             'other_type_text' => ['sometimes', 'nullable', 'string', 'max:255', 'regex:'.ValidationPatterns::SAFE_TEXT],
             'documents' => ['sometimes', 'nullable', 'array'],
-            'documents.*' => ['file', 'max:10240', 'mimes:pdf,jpg,jpeg,png,doc,docx'],
+            'documents.*' => ['file', 'max:25600', 'mimes:pdf,jpg,jpeg,png,doc,docx'],
         ];
     }
 
     public function messages(): array
     {
         return [
+            'documents.*.uploaded' => 'Each document must be 25 MB or smaller.',
+            'documents.*.max' => 'Each document must be 25 MB or smaller.',
+            'documents.*.mimes' => 'Documents must be PDF, JPG, PNG, DOC or DOCX files.',
             'other_type_text.regex' => 'This field may not contain < or > characters.',
         ];
     }
