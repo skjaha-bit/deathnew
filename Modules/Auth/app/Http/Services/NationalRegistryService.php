@@ -31,6 +31,9 @@ class NationalRegistryService
 
     private const PHONE_KEYS = ['phoneNumber', 'phone', 'mobile', 'mobileNumber', 'mobilePhone'];
 
+    /** Gender isn't in the documented NameAddress response, so it is only filled when the flow adds it. */
+    private const GENDER_KEYS = ['gender', 'sex', 'kyn'];
+
     /**
      * @return array{valid: bool, deceased: bool, deceased_at: ?string, data: array}
      *
@@ -87,6 +90,8 @@ class NationalRegistryService
             ['deceased' => $deceased, 'deceased_at' => $deceasedAt] = $this->watchlistDeceased($body['name'], $birthDate);
         }
 
+        [$street, $houseNumber] = $this->splitAddress($body['address'] ?? null);
+
         return [
             'valid' => true,
             'deceased' => $deceased,
@@ -94,9 +99,11 @@ class NationalRegistryService
             'data' => [
                 'name' => $body['name'],
                 'kennitala' => $body['ssn'] ?? $ssn,
-                'address' => $body['address'] ?? null,
+                'address' => $street,
+                'house_number' => $houseNumber,
                 'postal_code' => $body['postalCode'] ?? null,
                 'city' => $body['city'] ?? null,
+                'gender' => $this->normalizeGender($this->firstValue($body, $meta, self::GENDER_KEYS)),
                 'birth_date' => $birthDate,
                 'nationality' => $this->firstValue($body, $meta, self::NATIONALITY_KEYS),
                 'email' => $this->firstValue($body, $meta, self::EMAIL_KEYS),
@@ -150,6 +157,38 @@ class NationalRegistryService
     private function firstValue(array $body, array $meta, array $keys): ?string
     {
         return collect($keys)->map(fn ($key) => $body[$key] ?? $meta[$key] ?? null)->filter()->first();
+    }
+
+    /**
+     * Þjóðskrá gives the address as one line, e.g. "Laugavegur 12a" or "Hverfisgata 4, íb. 201",
+     * so the house number is the first number in it and the street is what comes before.
+     *
+     * @return array{0: ?string, 1: ?string}
+     */
+    private function splitAddress(?string $address): array
+    {
+        $address = trim((string) $address);
+
+        if ($address === '') {
+            return [null, null];
+        }
+
+        if (preg_match('/^(\D+?)\s+(\d.*)$/u', $address, $m)) {
+            return [trim($m[1]), trim($m[2], " \t,")];
+        }
+
+        return [$address, null];
+    }
+
+    /** Maps the registry's gender to the values the profile accepts: male, female or other. */
+    private function normalizeGender(?string $gender): ?string
+    {
+        return match (mb_strtolower(trim((string) $gender))) {
+            '' => null,
+            'm', 'male', 'karl', 'kk' => 'male',
+            'f', 'female', 'kona', 'kvk' => 'female',
+            default => 'other',
+        };
     }
 
     /** A personal kennitala is DDMMYY-XXXC, where C is the century (9 = 1900s, 0 = 2000s, 8 = 1800s). */

@@ -23,6 +23,12 @@ class AuthService
     /** Auðkenni only issues electronic IDs on Icelandic numbers. */
     private const ELECTRONIC_ID_PHONE_CODE = '+354';
 
+    /** Every account is registered in Iceland (countries.id 1). */
+    private const COUNTRY_ID = 1;
+
+    /** User columns copied from the national registry whenever it has a value for them. */
+    private const REGISTRY_PROFILE_FIELDS = ['address', 'house_number', 'city', 'postal_code', 'gender'];
+
     public function __construct(
         protected NationalRegistryService $registry,
         protected ElectronicIdService $electronicId,
@@ -30,15 +36,22 @@ class AuthService
 
     public function register(array $data): array
     {
-        $user = User::query()->create([
+        // The person already passed the registry check at eid/poll, so a registry outage here only skips the address.
+        try {
+            $person = $this->registry->lookup($data['kennitala']);
+        } catch (NationalRegistryUnavailableException) {
+            $person = ['valid' => false, 'data' => []];
+        }
+
+        $user = User::query()->create(array_merge([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make(Str::random(32)),
             'phone_code' => $data['phone_code'],
             'phone_number' => $data['phone_number'],
             'kennitala' => $data['kennitala'],
-            'country_id' => $data['country_id'] ?? null,
-        ]);
+            'country_id' => self::COUNTRY_ID,
+        ], $person['valid'] ? $this->registryProfile($person['data']) : []));
 
         $token = $user->createToken('FYRIRHYGGJA')->accessToken;
 
@@ -161,12 +174,24 @@ class AuthService
                 throw new LoginException('This person is already deceased. You cannot log in.', 403, $this->deathDetails($person['deceased_at']));
             }
 
-            $user->forceFill(['is_alive' => true, 'life_status_checked_at' => now()])->save();
+            $user->forceFill(array_merge(
+                ['is_alive' => true, 'life_status_checked_at' => now(), 'country_id' => self::COUNTRY_ID],
+                $person['valid'] ? $this->registryProfile($person['data']) : [],
+            ))->save();
         }
 
         $token = $user->createToken('FYRIRHYGGJA')->accessToken;
 
         return ['user' => $user, 'token' => $token];
+    }
+
+    /** The registry's address and gender, leaving out anything it didn't send so stored values are kept. */
+    private function registryProfile(array $data): array
+    {
+        return array_filter(
+            array_intersect_key($data, array_flip(self::REGISTRY_PROFILE_FIELDS)),
+            fn ($value) => $value !== null && $value !== '',
+        );
     }
 
     private function lookupRegistry(string $kennitala): array
