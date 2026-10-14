@@ -21,6 +21,8 @@ class InheritanceMatterAgent extends Model
         'social_security_number' => 'encrypted',
         'address' => 'encrypted',
         'phone' => 'encrypted',
+        'name' => 'encrypted',
+        'email' => 'encrypted',
     ];
 
     public function inheritanceMatter(): BelongsTo

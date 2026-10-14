@@ -9,6 +9,10 @@ class WorkplaceEmail extends Model
 {
     protected $fillable = ['workplace_id', 'email'];
 
+    protected $casts = [
+        'email' => 'encrypted',
+    ];
+
     public function workplace(): BelongsTo
     {
         return $this->belongsTo(Workplace::class);

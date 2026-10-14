@@ -18,6 +18,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'emergency-access.unlocked' => \Modules\EmergencyAccess\Http\Middleware\EnsureVaultUnlocked::class,
         ]);
 
+        // Encrypt every /api/* JSON response's `data` (ids/foreign keys stay plain).
+        $middleware->api(append: [
+            \Modules\Core\Http\Middleware\EncryptApiResponse::class,
+        ]);
+
         $middleware->redirectGuestsTo('/admin/login');
     })
     ->withExceptions(function (Exceptions $exceptions): void {

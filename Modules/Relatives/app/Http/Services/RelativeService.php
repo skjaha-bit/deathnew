@@ -125,9 +125,14 @@ class RelativeService
     {
         $emails = array_values(array_unique($emails));
 
-        $relative->emails()->whereNotIn('email', $emails)->delete();
+        // Emails are encrypted at rest, so they are compared in PHP rather than with whereNotIn().
+        foreach ($relative->emails()->get() as $existingEmail) {
+            if (! in_array($existingEmail->email, $emails, true)) {
+                $existingEmail->delete();
+            }
+        }
 
-        $existing = $relative->emails()->pluck('email')->all();
+        $existing = $relative->emails()->get()->pluck('email')->all();
 
         foreach (array_diff($emails, $existing) as $email) {
             $relative->emails()->create(['email' => $email]);

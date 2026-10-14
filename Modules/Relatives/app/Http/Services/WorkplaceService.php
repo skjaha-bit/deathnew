@@ -65,9 +65,14 @@ class WorkplaceService
     {
         $emails = array_values(array_unique($emails));
 
-        $workplace->emails()->whereNotIn('email', $emails)->delete();
+        // Emails are encrypted at rest, so they are compared in PHP rather than with whereNotIn().
+        foreach ($workplace->emails()->get() as $existingEmail) {
+            if (! in_array($existingEmail->email, $emails, true)) {
+                $existingEmail->delete();
+            }
+        }
 
-        $existing = $workplace->emails()->pluck('email')->all();
+        $existing = $workplace->emails()->get()->pluck('email')->all();
 
         foreach (array_diff($emails, $existing) as $email) {
             $workplace->emails()->create(['email' => $email]);

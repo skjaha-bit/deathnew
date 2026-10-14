@@ -17,6 +17,8 @@ class LifetimeAchievementGrandchild extends Model
 
     protected $casts = [
         'date_of_birth' => 'date',
+        'name' => 'encrypted',
+        'parent_name' => 'encrypted',
     ];
 
     public function lifetimeAchievement(): BelongsTo

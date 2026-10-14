@@ -35,6 +35,16 @@ class Property extends Model
         'has_will' => 'boolean',
         'has_loan_protection' => 'boolean',
         'loan_outstanding_balance' => 'decimal:2',
+        'name' => 'encrypted',
+        'location' => 'encrypted',
+        'asset_registration_number' => 'encrypted',
+        'co_owner_name' => 'encrypted',
+        'co_owner_contact' => 'encrypted',
+        'deeds_location' => 'encrypted',
+        'lender' => 'encrypted',
+        'loan_number' => 'encrypted',
+        'policy_number' => 'encrypted',
+        'notes_text' => 'encrypted',
     ];
 
     public function user(): BelongsTo

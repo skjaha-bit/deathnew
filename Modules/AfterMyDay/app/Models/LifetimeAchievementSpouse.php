@@ -13,6 +13,10 @@ class LifetimeAchievementSpouse extends Model
         'sort_order',
     ];
 
+    protected $casts = [
+        'name' => 'encrypted',
+    ];
+
     public function lifetimeAchievement(): BelongsTo
     {
         return $this->belongsTo(LifetimeAchievement::class);

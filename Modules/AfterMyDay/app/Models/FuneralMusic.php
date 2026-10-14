@@ -15,6 +15,10 @@ class FuneralMusic extends Model
         'sort_order',
     ];
 
+    protected $casts = [
+        'description' => 'encrypted',
+    ];
+
     public function funeral(): BelongsTo
     {
         return $this->belongsTo(Funeral::class);

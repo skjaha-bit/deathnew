@@ -14,6 +14,10 @@ class InsuranceDocument extends Model
         'size',
     ];
 
+    protected $casts = [
+        'original_name' => 'encrypted',
+    ];
+
     public function insurancePolicy(): BelongsTo
     {
         return $this->belongsTo(InsurancePolicy::class);

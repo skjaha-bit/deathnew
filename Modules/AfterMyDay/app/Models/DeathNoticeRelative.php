@@ -14,6 +14,10 @@ class DeathNoticeRelative extends Model
         'sort_order',
     ];
 
+    protected $casts = [
+        'name' => 'encrypted',
+    ];
+
     public function deathNotice(): BelongsTo
     {
         return $this->belongsTo(DeathNotice::class);

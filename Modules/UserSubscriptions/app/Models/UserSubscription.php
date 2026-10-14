@@ -21,6 +21,8 @@ class UserSubscription extends Model
     protected $casts = [
         'amount' => 'decimal:2',
         'power_of_attorney_termination' => 'boolean',
+        'name' => 'encrypted',
+        'associated_email' => 'encrypted',
     ];
 
     public function user(): BelongsTo

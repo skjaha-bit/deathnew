@@ -31,6 +31,11 @@ class DeathReport extends Model
     protected $casts = [
         'reported_at' => 'datetime',
         'reviewed_at' => 'datetime',
+        'reporter_name' => 'encrypted',
+        'reporter_email' => 'encrypted',
+        'reporter_phone' => 'encrypted',
+        'relationship' => 'encrypted',
+        'notes' => 'encrypted',
     ];
 
     public function user(): BelongsTo

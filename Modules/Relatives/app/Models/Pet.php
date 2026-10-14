@@ -34,6 +34,17 @@ class Pet extends Model
         'guardian_agreed' => 'boolean',
         'birth_year' => 'integer',
         'birth_month' => 'integer',
+        'name' => 'encrypted',
+        'animal_type' => 'encrypted',
+        'breed' => 'encrypted',
+        'identification_number' => 'encrypted',
+        'vet_clinic_name' => 'encrypted',
+        'vet_contact_person' => 'encrypted',
+        'vet_contact_number' => 'encrypted',
+        'medical_conditions' => 'encrypted',
+        'dietary_needs' => 'encrypted',
+        'policy_number' => 'encrypted',
+        'final_wishes' => 'encrypted',
     ];
 
     public function user(): BelongsTo

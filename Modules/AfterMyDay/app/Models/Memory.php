@@ -21,6 +21,7 @@ class Memory extends Model
         'date_of_memory' => 'date',
         'description' => 'encrypted',
         'location_notes' => 'encrypted',
+        'name' => 'encrypted',
     ];
 
     public function user(): BelongsTo

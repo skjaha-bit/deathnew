@@ -9,6 +9,11 @@ class WorkplacePhone extends Model
 {
     protected $fillable = ['workplace_id', 'phone_code', 'phone_number'];
 
+    protected $casts = [
+        'phone_code' => 'encrypted',
+        'phone_number' => 'encrypted',
+    ];
+
     public function workplace(): BelongsTo
     {
         return $this->belongsTo(Workplace::class);

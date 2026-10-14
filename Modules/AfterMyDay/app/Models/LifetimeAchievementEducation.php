@@ -17,6 +17,12 @@ class LifetimeAchievementEducation extends Model
         'sort_order',
     ];
 
+    protected $casts = [
+        'school_or_university' => 'encrypted',
+        'degree' => 'encrypted',
+        'year' => 'encrypted',
+    ];
+
     public function lifetimeAchievement(): BelongsTo
     {
         return $this->belongsTo(LifetimeAchievement::class);

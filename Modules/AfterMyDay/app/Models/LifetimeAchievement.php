@@ -24,6 +24,7 @@ class LifetimeAchievement extends Model
         'place_of_birth' => 'encrypted',
         'personal_information' => 'encrypted',
         'another_thing' => 'encrypted',
+        'full_name' => 'encrypted',
     ];
 
     public function user(): BelongsTo

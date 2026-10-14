@@ -20,6 +20,7 @@ class InsurancePolicy extends Model
 
     protected $casts = [
         'contact_message' => 'encrypted',
+        'other_type_text' => 'encrypted',
     ];
 
     public function user(): BelongsTo

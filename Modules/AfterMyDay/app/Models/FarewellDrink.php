@@ -19,6 +19,15 @@ class FarewellDrink extends Model
         'other_wishes',
     ];
 
+    protected $casts = [
+        'location' => 'encrypted',
+        'guests' => 'encrypted',
+        'catering' => 'encrypted',
+        'arrangement' => 'encrypted',
+        'comments' => 'encrypted',
+        'other_wishes' => 'encrypted',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

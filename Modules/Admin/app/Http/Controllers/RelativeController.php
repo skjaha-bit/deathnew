@@ -14,7 +14,9 @@ class RelativeController extends Controller
             ->with('user:id,name,email')
             ->when($request->filled('search'), fn ($q) => $q->where(function ($q) use ($request) {
                 $term = '%'.$request->query('search').'%';
-                $q->where('name', 'like', $term)->orWhere('email', 'like', $term);
+                // relatives.email is encrypted at rest and can't be LIKE-searched; match the owning user's email instead.
+                $q->where('name', 'like', $term)
+                    ->orWhereHas('user', fn ($u) => $u->where('email', 'like', $term));
             }))
             ->when($request->filled('status'), fn ($q) => $q->where('invite_status', $request->query('status')))
             ->latest()

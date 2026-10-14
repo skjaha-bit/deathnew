@@ -9,6 +9,11 @@ class RelativePhone extends Model
 {
     protected $fillable = ['relative_id', 'phone_code', 'phone_number'];
 
+    protected $casts = [
+        'phone_code' => 'encrypted',
+        'phone_number' => 'encrypted',
+    ];
+
     public function relative(): BelongsTo
     {
         return $this->belongsTo(Relative::class);

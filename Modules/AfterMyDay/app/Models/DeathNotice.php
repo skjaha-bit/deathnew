@@ -26,6 +26,10 @@ class DeathNotice extends Model
 
     protected $casts = [
         'date_of_birth' => 'date',
+        'introduction' => 'encrypted',
+        'job_title' => 'encrypted',
+        'home_address' => 'encrypted',
+        'body_text' => 'encrypted',
     ];
 
     public function user(): BelongsTo

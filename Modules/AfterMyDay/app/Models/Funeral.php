@@ -32,6 +32,19 @@ class Funeral extends Model
 
     protected $casts = [
         'coffin_decorations' => 'boolean',
+        'other_ceremony_options' => 'encrypted',
+        'other_thing' => 'encrypted',
+        'location' => 'encrypted',
+        'laying_place' => 'encrypted',
+        'clothing_request' => 'encrypted',
+        'event_manager' => 'encrypted',
+        'guests' => 'encrypted',
+        'pallbearer_request' => 'encrypted',
+        'coffin_design' => 'encrypted',
+        'coffin_decorations_detail' => 'encrypted',
+        'charity_case' => 'encrypted',
+        'another_thing' => 'encrypted',
+        'notes' => 'encrypted',
     ];
 
     public function user(): BelongsTo

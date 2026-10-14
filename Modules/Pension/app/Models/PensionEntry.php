@@ -23,6 +23,10 @@ class PensionEntry extends Model
     protected $casts = [
         'still_in_payment' => 'boolean',
         'special_rights_text' => 'encrypted',
+        'custom_fund_name' => 'encrypted',
+        'from_year' => 'encrypted',
+        'to_year' => 'encrypted',
+        'estimated_credit' => 'encrypted',
     ];
 
     public function user(): BelongsTo

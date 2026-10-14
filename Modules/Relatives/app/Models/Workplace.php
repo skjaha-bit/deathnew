@@ -22,6 +22,12 @@ class Workplace extends Model
 
     protected $casts = [
         'notify_after_death' => 'boolean',
+        'company_name' => 'encrypted',
+        'contact_name' => 'encrypted',
+        'contact_title' => 'encrypted',
+        'department' => 'encrypted',
+        'message_to_contact' => 'encrypted',
+        'additional_note' => 'encrypted',
     ];
 
     public function user(): BelongsTo

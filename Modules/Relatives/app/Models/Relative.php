@@ -36,6 +36,11 @@ class Relative extends Model
         'read_access_after_death' => 'boolean',
         'invited_at' => 'datetime',
         'accepted_at' => 'datetime',
+        'email' => 'encrypted',
+        'phone' => 'encrypted',
+        'relation' => 'encrypted',
+        'estate_agent_notes' => 'encrypted',
+        'personal_affairs_notes' => 'encrypted',
     ];
 
     public function user(): BelongsTo

@@ -15,6 +15,10 @@ class MemoryDocument extends Model
         'sort_order',
     ];
 
+    protected $casts = [
+        'original_name' => 'encrypted',
+    ];
+
     public function memory(): BelongsTo
     {
         return $this->belongsTo(Memory::class);

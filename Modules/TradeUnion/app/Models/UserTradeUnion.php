@@ -30,6 +30,11 @@ class UserTradeUnion extends Model
         'department_contact' => 'encrypted',
         'rights_text' => 'encrypted',
         'notes_text' => 'encrypted',
+        'union_name' => 'encrypted',
+        'from_month' => 'encrypted',
+        'from_year' => 'encrypted',
+        'to_month' => 'encrypted',
+        'to_year' => 'encrypted',
     ];
 
     public function user(): BelongsTo

@@ -72,6 +72,13 @@ class User extends Authenticatable
             'is_alive' => 'boolean',
             'life_status_checked_at' => 'datetime',
             'deceased_at' => 'datetime',
+            'address' => 'encrypted',
+            'house_number' => 'encrypted',
+            'city' => 'encrypted',
+            'postal_code' => 'encrypted',
+            'marital_status' => 'encrypted',
+            'gender' => 'encrypted',
+            'promo_code' => 'encrypted',
         ];
     }
 

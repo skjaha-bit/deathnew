@@ -8,7 +8,7 @@
     <div class="card p-3 mb-3">
         <form method="GET" class="row g-2">
             <div class="col-md-4">
-                <input type="text" name="search" class="form-control" placeholder="Search name or email" value="{{ request('search') }}">
+                <input type="text" name="search" class="form-control" placeholder="Search name or owner email" value="{{ request('search') }}">
             </div>
             <div class="col-md-3">
                 <select name="status" class="form-select">
