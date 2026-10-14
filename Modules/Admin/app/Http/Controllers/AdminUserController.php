@@ -3,6 +3,7 @@
 namespace Modules\Admin\Http\Controllers;
 
 use App\Models\User;
+use App\Rules\UniqueBlindIndex;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -20,10 +21,7 @@ class AdminUserController extends Controller
         $users = User::query()
             ->whereHas('roles', fn ($q) => $q->whereIn('name', self::ADMIN_TIER_ROLES))
             ->with('roles')
-            ->when($request->filled('search'), fn ($q) => $q->where(function ($q) use ($request) {
-                $term = '%'.$request->query('search').'%';
-                $q->where('name', 'like', $term)->orWhere('email', 'like', $term);
-            }))
+            ->when($request->filled('search'), fn ($q) => $q->search($request->query('search')))
             ->latest()
             ->paginate(20)
             ->withQueryString();
@@ -46,7 +44,7 @@ class AdminUserController extends Controller
 
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255', 'regex:'.ValidationPatterns::NAME],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'email' => ['required', 'email', 'max:255', UniqueBlindIndex::email()],
             'role' => ['required', 'string', 'in:'.implode(',', $assignableRoles)],
         ]);
 

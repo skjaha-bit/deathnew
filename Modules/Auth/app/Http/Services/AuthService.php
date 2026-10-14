@@ -118,11 +118,8 @@ class AuthService
 
     private function findByKennitala(string $kennitala): ?User
     {
-        $kennitala = preg_replace('/\D/', '', $kennitala);
-
-        return User::query()
-            ->whereIn('kennitala', [$kennitala, substr($kennitala, 0, 6).'-'.substr($kennitala, 6)])
-            ->first();
+        // The blind index normalizes to digits, so dashed and undashed kennitalas both match.
+        return User::query()->whereKennitala($kennitala)->first();
     }
 
     /** Registry details for a kennitala with no account yet; refuses invalid and deceased people. */
@@ -208,10 +205,9 @@ class AuthService
         $query = User::query();
 
         if (! empty($data['kennitala'])) {
-            $query->where('kennitala', $data['kennitala']);
+            $query->whereKennitala($data['kennitala']);
         } else {
-            $query->where('phone_code', $data['phone_code'])
-                ->where('phone_number', $data['phone_number']);
+            $query->wherePhone($data['phone_code'], $data['phone_number']);
         }
 
         $user = $query->first();
@@ -257,13 +253,24 @@ class AuthService
     {
         $emails = array_values(array_unique(array_diff($emails, [$user->email])));
 
-        $user->emails()->whereNotIn('email', $emails)->delete();
+        // Emails are encrypted at rest: compare in PHP, and check other users via the blind index.
+        foreach ($user->emails()->get() as $existingEmail) {
+            if (! in_array($existingEmail->email, $emails, true)) {
+                $existingEmail->delete();
+            }
+        }
 
-        $existing = $user->emails()->pluck('email')->all();
-        $taken = UserEmail::query()->where('user_id', '!=', $user->id)->pluck('email')->all();
+        $existing = $user->emails()->get()->pluck('email')->all();
 
-        foreach (array_diff($emails, $existing, $taken) as $email) {
-            $user->emails()->create(['email' => $email]);
+        foreach (array_diff($emails, $existing) as $email) {
+            $takenByOther = UserEmail::query()
+                ->where('user_id', '!=', $user->id)
+                ->whereEmail($email)
+                ->exists();
+
+            if (! $takenByOther) {
+                $user->emails()->create(['email' => $email]);
+            }
         }
 
         return $user->emails()->get();
@@ -294,8 +301,7 @@ class AuthService
             $alreadyMine = $current->contains(fn (UserPhone $existing) => $isSame($phone, $existing));
             $takenByOther = UserPhone::query()
                 ->where('user_id', '!=', $user->id)
-                ->where('phone_code', $phone['phone_code'])
-                ->where('phone_number', $phone['phone_number'])
+                ->wherePhone($phone['phone_code'], $phone['phone_number'])
                 ->exists();
 
             if (! $alreadyMine && ! $takenByOther) {

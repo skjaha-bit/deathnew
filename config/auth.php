@@ -68,7 +68,8 @@ return [
 
     'providers' => [
         'users' => [
-            'driver' => 'eloquent',
+            // Eloquent, but resolves `email` via users.email_hash (users.email is encrypted).
+            'driver' => 'eloquent-blind-index',
             'model' => env('AUTH_MODEL', User::class),
         ],
 

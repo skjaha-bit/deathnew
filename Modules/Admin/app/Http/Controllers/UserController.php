@@ -15,10 +15,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $users = User::query()
-            ->when($request->filled('search'), fn ($q) => $q->where(function ($q) use ($request) {
-                $term = '%'.$request->query('search').'%';
-                $q->where('name', 'like', $term)->orWhere('email', 'like', $term);
-            }))
+            ->when($request->filled('search'), fn ($q) => $q->search($request->query('search')))
             ->when($request->filled('status'), fn ($q) => $q->where('status', $request->query('status')))
             ->withCount('relatives')
             ->with('subscription.plan')

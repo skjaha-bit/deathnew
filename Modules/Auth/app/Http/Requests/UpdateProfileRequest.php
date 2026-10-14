@@ -2,6 +2,7 @@
 
 namespace Modules\Auth\Http\Requests;
 
+use App\Rules\UniqueBlindIndex;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Modules\Core\Support\ValidationPatterns;
@@ -17,10 +18,10 @@ class UpdateProfileRequest extends FormRequest
     {
         return [
             'name' => ['sometimes', 'string', 'max:255', 'regex:'.ValidationPatterns::NAME],
-            'email' => ['sometimes', 'string', 'email:rfc,filter', 'max:255', Rule::unique('users', 'email')->ignore($this->user()->id)],
+            'email' => ['sometimes', 'string', 'email:rfc,filter', 'max:255', UniqueBlindIndex::email('users', $this->user()->id)],
             'phone_code' => ['sometimes', 'nullable', 'string', 'max:8', 'regex:'.ValidationPatterns::PHONE_CODE],
             'phone_number' => ['sometimes', 'nullable', 'string', 'max:20', 'regex:'.ValidationPatterns::PHONE_NUMBER],
-            'kennitala' => ['sometimes', 'nullable', 'string', 'max:20', 'regex:'.ValidationPatterns::KENNITALA, Rule::unique('users', 'kennitala')->ignore($this->user()->id)],
+            'kennitala' => ['sometimes', 'nullable', 'string', 'max:20', 'regex:'.ValidationPatterns::KENNITALA, UniqueBlindIndex::kennitala('users', $this->user()->id)],
             'preferred_language_id' => ['sometimes', 'nullable', 'integer', 'exists:languages,id'],
             'address' => ['sometimes', 'nullable', 'string', 'max:255'],
             'house_number' => ['sometimes', 'nullable', 'string', 'max:50'],

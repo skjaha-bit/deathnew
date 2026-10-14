@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Support\BlindIndex;
 use Database\Factories\UserFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -61,11 +63,86 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'email_hash',
+        'kennitala_hash',
+        'phone_hash',
     ];
+
+    /**
+     * Keep the blind-index hashes in step with the encrypted identity columns
+     * they stand in for (see App\Support\BlindIndex).
+     */
+    protected static function booted(): void
+    {
+        static::saving(function (User $user) {
+            if ($user->isDirty('email')) {
+                $user->email_hash = BlindIndex::email($user->email);
+            }
+
+            if ($user->isDirty('kennitala')) {
+                $user->kennitala_hash = BlindIndex::kennitala($user->kennitala);
+            }
+
+            if ($user->isDirty(['phone_code', 'phone_number'])) {
+                $user->phone_hash = BlindIndex::phone($user->phone_code, $user->phone_number);
+            }
+        });
+    }
+
+    public function scopeWhereEmail(Builder $query, ?string $email): Builder
+    {
+        return $query->where('email_hash', BlindIndex::email($email));
+    }
+
+    public function scopeWhereKennitala(Builder $query, ?string $kennitala): Builder
+    {
+        return $query->where('kennitala_hash', BlindIndex::kennitala($kennitala));
+    }
+
+    public function scopeWherePhone(Builder $query, ?string $code, ?string $number): Builder
+    {
+        return $query->where('phone_hash', BlindIndex::phone($code, $number));
+    }
+
+    /**
+     * Admin search: exact email / kennitala / phone via the blind indexes, or
+     * a partial name match. Names are encrypted, so that part is matched
+     * after decrypting in PHP.
+     */
+    public function scopeSearch(Builder $query, string $term): Builder
+    {
+        $term = trim($term);
+        $needle = mb_strtolower($term);
+
+        $nameMatches = static::query()->select(['id', 'name'])->lazyById(500)
+            ->filter(fn (User $u) => str_contains(mb_strtolower((string) $u->name), $needle))
+            ->pluck('id')
+            ->all();
+
+        // A null hash (e.g. a name has no digits) must not become "hash IS NULL".
+        $hashes = array_filter([
+            'email_hash' => BlindIndex::email($term),
+            'kennitala_hash' => BlindIndex::kennitala($term),
+            'phone_hash' => BlindIndex::phone('354', $term),
+        ]);
+
+        return $query->where(function (Builder $q) use ($nameMatches, $hashes) {
+            $q->whereIn('id', $nameMatches);
+
+            foreach ($hashes as $column => $hash) {
+                $q->orWhere($column, $hash);
+            }
+        });
+    }
 
     protected function casts(): array
     {
         return [
+            'name' => 'encrypted',
+            'email' => 'encrypted',
+            'phone_code' => 'encrypted',
+            'phone_number' => 'encrypted',
+            'kennitala' => 'encrypted',
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'newsletter_opt_in' => 'boolean',
@@ -85,7 +162,8 @@ class User extends Authenticatable
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['name', 'email', 'status'])
+            // name/email are encrypted at rest; logging them would copy them into activity_log in plaintext.
+            ->logOnly(['status'])
             ->logOnlyDirty();
     }
 

@@ -2,6 +2,7 @@
 
 namespace Modules\Auth\Http\Requests;
 
+use App\Rules\UniqueBlindIndex;
 use Closure;
 use Illuminate\Foundation\Http\FormRequest;
 use Modules\Auth\Support\RegistrationToken;
@@ -33,10 +34,10 @@ class RegisterRequest extends FormRequest
                 }
             }],
             'name' => ['required', 'string', 'max:255', 'regex:'.ValidationPatterns::NAME],
-            'email' => ['required', 'string', 'email:rfc,filter', 'max:255', 'unique:users,email'],
+            'email' => ['required', 'string', 'email:rfc,filter', 'max:255', UniqueBlindIndex::email()],
             'phone_code' => ['required', 'string', 'max:8', 'regex:'.ValidationPatterns::PHONE_CODE],
             'phone_number' => ['required', 'string', 'max:20', 'regex:'.ValidationPatterns::PHONE_NUMBER],
-            'kennitala' => ['required', 'string', 'max:20', 'regex:'.ValidationPatterns::KENNITALA, 'unique:users,kennitala'],
+            'kennitala' => ['required', 'string', 'max:20', 'regex:'.ValidationPatterns::KENNITALA, UniqueBlindIndex::kennitala()],
             'country_id' => ['nullable', 'integer', 'exists:countries,id'],
             'terms_accepted' => ['required', 'accepted'],
         ];
