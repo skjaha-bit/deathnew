@@ -52,10 +52,11 @@ class CommercialBankService
     public function update(UserCommercialBank $bank, array $data): UserCommercialBank
     {
         return DB::transaction(function () use ($bank, $data) {
-            // Same fields as create: the body replaces the whole record.
+            // Same fields as create: the body replaces the whole record, except a
+            // swift that wasn't sent at all, which keeps the stored value.
             $bank->update([
                 'bank_id' => $data['bank_id'] ?? null,
-                'swift' => $this->normalizeSwift($data['swift'] ?? null),
+                'swift' => array_key_exists('swift', $data) ? $this->normalizeSwift($data['swift']) : $bank->swift,
                 'loan_type_id' => $data['loan_type_id'] ?? null,
                 'bank_vault' => $data['bank_vault'] ?? false,
                 'notes_text' => $data['notes_text'] ?? null,

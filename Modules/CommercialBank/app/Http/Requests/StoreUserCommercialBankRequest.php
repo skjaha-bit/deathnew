@@ -27,7 +27,7 @@ class StoreUserCommercialBankRequest extends FormRequest
     {
         return [
             'bank_id' => ['nullable', 'exists:banks,id'],
-            'swift' => ['present', 'nullable', 'required_if:bank_id,'.Bank::SWIFT_REQUIRED_ID, 'string', 'max:34', 'regex:/^[A-Za-z0-9]+$/'],
+            'swift' => ['nullable', 'required_if:bank_id,'.Bank::SWIFT_REQUIRED_ID, 'string', 'max:34', 'regex:/^[A-Za-z0-9]+$/'],
             'loan_type_id' => ['nullable', 'exists:loan_types,id'],
             'bank_vault' => ['nullable', 'boolean'],
             'notes_text' => ['nullable', 'string', 'max:2000', 'regex:'.ValidationPatterns::SAFE_TEXT],
@@ -49,7 +49,6 @@ class StoreUserCommercialBankRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'swift.present' => 'The swift field must always be sent (it may be empty unless bank 6 is selected).',
             'swift.required_if' => 'Enter the SWIFT code for this bank.',
             'swift.regex' => 'SWIFT code may only contain letters and digits.',
             'accounts.*.swift_iban.regex' => 'SWIFT/IBAN must be 5-34 letters or digits, no spaces or symbols.',
