@@ -153,6 +153,7 @@ class CommercialBankController extends Controller
             'account_number' => $account->account_number,
             'swift_iban' => $account->swift_iban,
             'is_joint' => $account->is_joint,
+            'joint_holder_name' => $account->joint_holder_name,
         ];
     }
 

@@ -16,7 +16,7 @@
             <div class="border rounded p-2 mb-2">
                 <div class="fw-semibold">{{ $bank->bank?->name ?? 'Unknown bank' }}</div>
                 @foreach ($bank->accounts as $account)
-                    <div class="small text-muted">Account: {{ $account->account_number }} · SWIFT/IBAN: {{ $account->swift_iban }}</div>
+                    <div class="small text-muted">Account: {{ $account->account_number }} · SWIFT/IBAN: {{ $account->swift_iban }}@if ($account->is_joint) · Joint with: {{ $account->joint_holder_name ?? '—' }}@endif</div>
                 @endforeach
                 @if ($bank->notes_text)<div class="small mt-1">{{ $bank->notes_text }}</div>@endif
             </div>

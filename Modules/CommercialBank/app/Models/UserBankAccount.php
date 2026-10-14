@@ -13,12 +13,14 @@ class UserBankAccount extends Model
         'account_number',
         'swift_iban',
         'is_joint',
+        'joint_holder_name',
     ];
 
     protected $casts = [
         'is_joint' => 'boolean',
         'account_number' => 'encrypted',
         'swift_iban' => 'encrypted',
+        'joint_holder_name' => 'encrypted',
     ];
 
     public function userCommercialBank(): BelongsTo

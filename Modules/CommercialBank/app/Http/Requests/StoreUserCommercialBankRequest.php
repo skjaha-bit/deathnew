@@ -37,6 +37,7 @@ class StoreUserCommercialBankRequest extends FormRequest
             'accounts.*.account_number' => ['nullable', 'string', 'max:64', 'regex:'.ValidationPatterns::CODE],
             'accounts.*.swift_iban' => ['nullable', 'string', 'max:34', 'regex:/^[A-Za-z0-9]{5,34}$/'],
             'accounts.*.is_joint' => ['nullable', 'boolean'],
+            'accounts.*.joint_holder_name' => ['nullable', 'required_if_accepted:accounts.*.is_joint', 'string', 'max:255', 'regex:'.ValidationPatterns::NAME],
 
             'bonds' => ['nullable', 'array'],
             'bonds.*.bond_type_id' => ['nullable', 'exists:bond_types,id'],
@@ -52,6 +53,8 @@ class StoreUserCommercialBankRequest extends FormRequest
             'swift.required_if' => 'Enter the SWIFT code for this bank.',
             'swift.regex' => 'SWIFT code may only contain letters and digits.',
             'accounts.*.swift_iban.regex' => 'SWIFT/IBAN must be 5-34 letters or digits, no spaces or symbols.',
+            'accounts.*.joint_holder_name.required_if_accepted' => 'Enter the joint account holder’s name.',
+            'accounts.*.joint_holder_name.regex' => 'The joint account holder’s name may only contain letters, spaces, dots, apostrophes and hyphens.',
             'notes_text.regex' => 'This field may not contain < or > characters.',
         ];
     }

@@ -116,12 +116,18 @@ class CommercialBankService
             return;
         }
 
-        $bank->accounts()->createMany(array_map(fn (array $account) => [
-            'account_type_id' => $account['account_type_id'] ?? null,
-            'account_number' => $account['account_number'] ?? null,
-            'swift_iban' => $account['swift_iban'] ?? null,
-            'is_joint' => $account['is_joint'] ?? false,
-        ], $accounts));
+        $bank->accounts()->createMany(array_map(function (array $account) {
+            $isJoint = (bool) ($account['is_joint'] ?? false);
+
+            return [
+                'account_type_id' => $account['account_type_id'] ?? null,
+                'account_number' => $account['account_number'] ?? null,
+                'swift_iban' => $account['swift_iban'] ?? null,
+                'is_joint' => $isJoint,
+                // Only a joint account has a second holder.
+                'joint_holder_name' => $isJoint ? ($account['joint_holder_name'] ?? null) : null,
+            ];
+        }, $accounts));
     }
 
     protected function syncBonds(UserCommercialBank $bank, array $bonds): void
