@@ -24,7 +24,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // users.email is encrypted, so credential lookups go through its blind index.
-        Auth::provider('eloquent-blind-index', fn ($app, array $config) => new BlindIndexUserProvider($app['hash'], $config['model']));
+        // Registered as "eloquent" itself, because Passport only accepts that driver name.
+        Auth::provider('eloquent', fn ($app, array $config) => new BlindIndexUserProvider($app['hash'], $config['model']));
 
         // The admin panel is built on Bootstrap 5, not Tailwind.
         Paginator::useBootstrapFive();

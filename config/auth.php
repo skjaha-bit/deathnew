@@ -68,8 +68,9 @@ return [
 
     'providers' => [
         'users' => [
-            // Eloquent, but resolves `email` via users.email_hash (users.email is encrypted).
-            'driver' => 'eloquent-blind-index',
+            // Must stay "eloquent" (Passport requires it). AppServiceProvider swaps in
+            // BlindIndexUserProvider, which resolves `email` via users.email_hash.
+            'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', User::class),
         ],
 
