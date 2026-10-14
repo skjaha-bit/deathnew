@@ -6,17 +6,21 @@ use RuntimeException;
 use stdClass;
 
 /**
- * Encrypts API response values field-by-field for the frontend.
+ * Encrypts user-entered API response values field-by-field for the frontend.
  *
  * Each value is JSON-encoded (so numbers/booleans keep their type after the
  * frontend JSON.parse()s it) and sealed with AES-256-GCM. Wire format of
- * one encrypted value: base64( iv[12 bytes] . ciphertext . authTag[16 bytes] )
+ * one encrypted value: "enc:" . base64( iv[12 bytes] . ciphertext . authTag[16 bytes] )
  * - the layout WebCrypto's AES-GCM decrypt() expects.
  *
- * Ids and foreign keys (`id`, `*_id`, `*_ids`) and nulls are left as is.
+ * Left as is: ids and foreign keys (`id`, `*_id`, `*_ids`), reference
+ * labels beside their foreign key (`bank_name` next to `bank_id`), the
+ * configured except/reference keys, and nulls.
  */
 class ApiPayloadEncrypter
 {
+    public const PREFIX = 'enc:';
+
     private const CIPHER = 'aes-256-gcm';
 
     private const IV_LENGTH = 12;
@@ -28,26 +32,24 @@ class ApiPayloadEncrypter
     public function __construct(
         private readonly ?string $configuredKey,
         private readonly array $exceptKeys = [],
+        private readonly array $referenceKeys = [],
     ) {}
 
-    public function encrypt(mixed $data, ?string $field = null): mixed
+    public function encrypt(mixed $data): mixed
     {
-        if ($field !== null && $this->isPlainField($field)) {
-            return $data;
-        }
-
         if ($data instanceof stdClass) {
+            $fields = get_object_vars($data);
             $out = new stdClass;
 
-            foreach (get_object_vars($data) as $k => $v) {
-                $out->{$k} = $this->encrypt($v, (string) $k);
+            foreach ($fields as $k => $v) {
+                $k = (string) $k;
+                $out->{$k} = $this->isPlainField($k, $fields) ? $v : $this->encrypt($v);
             }
 
             return $out;
         }
 
         if (is_array($data)) {
-            // List items inherit nothing from their numeric index.
             return array_map(fn ($v) => $this->encrypt($v), $data);
         }
 
@@ -69,11 +71,15 @@ class ApiPayloadEncrypter
             throw new RuntimeException('API payload encryption failed.');
         }
 
-        return base64_encode($iv.$cipher.$tag);
+        return self::PREFIX.base64_encode($iv.$cipher.$tag);
     }
 
     public function decryptValue(string $payload): mixed
     {
+        if (str_starts_with($payload, self::PREFIX)) {
+            $payload = substr($payload, strlen(self::PREFIX));
+        }
+
         $raw = base64_decode($payload, true);
 
         if ($raw === false || strlen($raw) < self::IV_LENGTH + self::TAG_LENGTH) {
@@ -93,12 +99,22 @@ class ApiPayloadEncrypter
         return json_decode($plain, true, 512, JSON_THROW_ON_ERROR);
     }
 
-    public function isPlainField(string $field): bool
+    /**
+     * @param  array<string, mixed>  $siblings  The other fields of the same object.
+     */
+    public function isPlainField(string $field, array $siblings = []): bool
     {
-        return $field === 'id'
-            || str_ends_with($field, '_id')
-            || str_ends_with($field, '_ids')
-            || in_array($field, $this->exceptKeys, true);
+        if ($field === 'id' || str_ends_with($field, '_id') || str_ends_with($field, '_ids')) {
+            return true;
+        }
+
+        if (in_array($field, $this->exceptKeys, true) || in_array($field, $this->referenceKeys, true)) {
+            return true;
+        }
+
+        // Reference label beside its foreign key, e.g. bank_name next to bank_id.
+        return str_ends_with($field, '_name')
+            && array_key_exists(substr($field, 0, -strlen('_name')).'_id', $siblings);
     }
 
     private function key(): string

@@ -9,9 +9,11 @@ use Modules\Core\Services\ApiPayloadEncrypter;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Encrypts the `data` part of every /api/* JSON response (see
- * ApiPayloadEncrypter). `success`, `message` and validation `errors` stay
- * readable, and `encrypted: true` tells the frontend to decrypt `data`.
+ * Encrypts user-entered values in the `data` part of /api/* JSON responses
+ * (see ApiPayloadEncrypter). Reference/system routes listed in
+ * api_encryption.except_routes are sent plain. `success`, `message` and
+ * validation `errors` stay readable, and `encrypted: true` marks a response
+ * whose `data` may contain "enc:" values.
  */
 class EncryptApiResponse
 {
@@ -21,7 +23,9 @@ class EncryptApiResponse
     {
         $response = $next($request);
 
-        if (! config('api_encryption.enabled') || ! $response instanceof JsonResponse) {
+        if (! config('api_encryption.enabled')
+            || ! $response instanceof JsonResponse
+            || $request->is(...config('api_encryption.except_routes', []))) {
             return $response;
         }
 

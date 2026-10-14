@@ -1,6 +1,6 @@
 # Decrypting API responses (React)
 
-Every `/api/*` JSON response now has its `data` encrypted **field by field**. You need to decrypt it before using it.
+User-entered data in `/api/*` responses is now encrypted **field by field**. Any string that starts with `enc:` must be decrypted before you use it. Everything else is plain and can be used as is.
 
 ## What a response looks like
 
@@ -13,24 +13,29 @@ Every `/api/*` JSON response now has its `data` encrypted **field by field**. Yo
     "id": 12,
     "user_id": 3,
     "bank_id": 5,
-    "type_ids": [1, 2],
-    "notes_text": "0ZR+zA2K2Agl0hlElx4wQspTXCjeYC+hbZKTnLNnsHh2lO90iKHJ",
-    "bank_vault": "qWNIrauFnD3DKGARFyt8GgEVjkMPDZd9xN9tzWh+UzU=",
-    "bank": { "id": 5, "name": "UsVRqUxExdLw/4lFfuRPi4ZB3YqG1+dO3Nv+ppmwdmH0dU+j8JxUdZp1" }
+    "bank_name": "Landsbankinn",
+    "notes_text": "enc:fV0XhOMCPgHDVKGLN3lvHNI6NN2N8nRp5umdjgIKMaeKrm9sormx",
+    "bank_vault": "enc:1s53nM1QWstC98+GziAbltQTh+DCIsgjGA+FnNT2+ug=",
+    "created_at": "2026-10-14T10:00:00+00:00"
   }
 }
 ```
 
-Rules:
+**Encrypted:** values the user typed or chose in their own records (notes, names, addresses, amounts, yes/no answers, etc.).
 
-- `success`, `message` and validation `errors` are **not** encrypted. Only `data` is, and only when `encrypted` is `true`.
-- Keys named `id`, or ending in `_id` or `_ids`, are **plain**: use them as they are.
-- `null` stays `null`.
-- Every other value (strings, numbers, booleans, dates, pagination fields such as `total`) is an encrypted string. After decryption you get the original type back: `12.5` stays a number and `true` stays a boolean.
-- Nested objects and arrays follow the same rules at every level.
-- Request bodies you **send** stay plain JSON, as before.
+**Plain (no decryption needed):**
 
-Algorithm: AES-256-GCM. Each value is `base64( iv[12 bytes] + ciphertext + authTag[16 bytes] )`, and the plaintext is JSON (decrypt, then `JSON.parse`).
+- reference/lookup lists, such as `/v1/banks`, `/v1/loan-types`, `/v1/countries`, `/v1/insurance-types`, `/v1/trade-unions`, `/v1/funeral-*-types` and `/v1/subscription-plans`
+- system content: translations, CMS, banners, notifications, overview and subscriptions
+- ids and foreign keys (`id`, `*_id`, `*_ids`)
+- reference labels inside user records (`bank_name`, `loan_type_name`, `insurance_company_name`, insurance `types`, …)
+- `token`, `created_at`, `updated_at`, `null` values, and `success` / `message` / `errors`
+
+You don't need to remember these rules. Decrypt every string that starts with `enc:` and leave everything else alone. After decryption, each value has its original type: `12.5` comes back as a number and `true` as a boolean.
+
+Request bodies you **send** stay plain JSON, as before.
+
+Algorithm: AES-256-GCM. Each value is `"enc:" + base64( iv[12 bytes] + ciphertext + authTag[16 bytes] )`, and the plaintext is JSON (decrypt, then `JSON.parse`).
 
 ## Setup
 
@@ -50,6 +55,7 @@ No npm packages are needed. The code uses the browser's built-in Web Crypto API,
 ```js
 const RAW_KEY = import.meta.env.VITE_API_ENCRYPTION_KEY; // "base64:...."
 
+const PREFIX = 'enc:';
 const IV_LENGTH = 12;
 
 let keyPromise = null;
@@ -72,14 +78,13 @@ function getKey() {
   return keyPromise;
 }
 
-// Must match the backend: ids and foreign keys are never encrypted.
-function isPlainField(key) {
-  return key === 'id' || key.endsWith('_id') || key.endsWith('_ids');
+export function isEncrypted(value) {
+  return typeof value === 'string' && value.startsWith(PREFIX);
 }
 
-/** Decrypt one encrypted value back to its original type. */
-export async function decryptValue(payload) {
-  const raw = base64ToBytes(payload);
+/** Decrypt one "enc:..." value back to its original type. */
+export async function decryptValue(value) {
+  const raw = base64ToBytes(value.slice(PREFIX.length));
   const iv = raw.slice(0, IV_LENGTH);
   const cipherAndTag = raw.slice(IV_LENGTH); // Web Crypto expects ciphertext + tag together
 
@@ -92,24 +97,22 @@ export async function decryptValue(payload) {
   return JSON.parse(new TextDecoder().decode(plain));
 }
 
-/** Recursively decrypt a `data` value (object, array or single value). */
-export async function decryptData(value, key = null) {
-  if (key !== null && isPlainField(key)) return value;
+/** Recursively decrypt every "enc:" string inside any value. */
+export async function decryptData(value) {
+  if (isEncrypted(value)) return decryptValue(value);
 
   if (Array.isArray(value)) {
-    return Promise.all(value.map((item) => decryptData(item)));
+    return Promise.all(value.map(decryptData));
   }
 
   if (value !== null && typeof value === 'object') {
     const entries = await Promise.all(
-      Object.entries(value).map(async ([k, v]) => [k, await decryptData(v, k)]),
+      Object.entries(value).map(async ([k, v]) => [k, await decryptData(v)]),
     );
     return Object.fromEntries(entries);
   }
 
-  if (typeof value === 'string') return decryptValue(value);
-
-  return value; // null
+  return value;
 }
 
 /** Decrypt a full API response body. Bodies without `encrypted: true` are returned unchanged. */
@@ -159,4 +162,4 @@ export async function apiFetch(url, options) {
 
 - **`OperationError` when decrypting:** the frontend key doesn't match the backend `API_ENCRYPTION_KEY`, or a value was changed in transit.
 - **`crypto.subtle` is undefined:** the page isn't on HTTPS or localhost.
-- **Turning encryption off while debugging:** set `API_ENCRYPTION_ENABLED=false` in the backend `.env`. Responses then have no `encrypted` flag, and `decryptResponse` returns them unchanged.
+- **Turning encryption off while debugging:** set `API_ENCRYPTION_ENABLED=false` in the backend `.env`. Responses then come back fully plain.

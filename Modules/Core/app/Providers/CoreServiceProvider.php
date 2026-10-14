@@ -46,6 +46,7 @@ class CoreServiceProvider extends ModuleServiceProvider
         $this->app->singleton(ApiPayloadEncrypter::class, fn ($app) => new ApiPayloadEncrypter(
             $app['config']->get('api_encryption.key'),
             $app['config']->get('api_encryption.except_keys', []),
+            $app['config']->get('api_encryption.reference_keys', []),
         ));
     }
 
