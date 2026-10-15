@@ -4,9 +4,12 @@ namespace Modules\Property\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Modules\Core\Support\ValidationPatterns;
+use Modules\Property\Http\Requests\Concerns\NormalizesOwnership;
 
 class UpdatePropertyRequest extends FormRequest
 {
+    use NormalizesOwnership;
+
     public function authorize(): bool
     {
         return true;

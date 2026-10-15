@@ -7,8 +7,8 @@ class ValidationPatterns
     /** Person names: Unicode letters (incl. Icelandic), spaces, apostrophes, hyphens, periods. */
     public const NAME = "/^[\\p{L}\\p{M}\\s.'\\-]+$/u";
 
-    /** Organization/company/fund names: letters, digits, spaces, periods, commas, ampersands, apostrophes, hyphens. */
-    public const ORG_NAME = "/^[\\p{L}\\p{M}\\p{N}\\s.,&'\\-]+$/u";
+    /** Organization/company/fund names: letters, digits, spaces, periods, commas, ampersands, apostrophes, hyphens, parentheses. */
+    public const ORG_NAME = "/^[\\p{L}\\p{M}\\p{N}\\s.,&'()\\-]+$/u";
 
     /** International dialing code, e.g. +354. */
     public const PHONE_CODE = '/^\+?[0-9]{1,4}$/';
