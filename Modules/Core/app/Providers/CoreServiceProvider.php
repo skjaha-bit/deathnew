@@ -2,7 +2,6 @@
 
 namespace Modules\Core\Providers;
 
-use Modules\Core\Services\ApiPayloadEncrypter;
 use Modules\Core\Services\Sms\GatewayApiSmsDriver;
 use Modules\Core\Services\Sms\SmsGatewayInterface;
 use Nwidart\Modules\Support\ModuleServiceProvider;
@@ -42,12 +41,6 @@ class CoreServiceProvider extends ModuleServiceProvider
         parent::register();
 
         $this->app->bind(SmsGatewayInterface::class, GatewayApiSmsDriver::class);
-
-        $this->app->singleton(ApiPayloadEncrypter::class, fn ($app) => new ApiPayloadEncrypter(
-            $app['config']->get('api_encryption.key'),
-            $app['config']->get('api_encryption.except_keys', []),
-            $app['config']->get('api_encryption.reference_keys', []),
-        ));
     }
 
     /**
