@@ -18,9 +18,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'emergency-access.unlocked' => \Modules\EmergencyAccess\Http\Middleware\EnsureVaultUnlocked::class,
         ]);
 
-        // Encrypt every /api/* JSON response's `data` (ids/foreign keys stay plain).
-        $middleware->api(append: [
-            \Modules\Core\Http\Middleware\EncryptApiResponse::class,
+        // API responses are sent plain: encrypted DB columns are decrypted by their
+        // Eloquent `encrypted` casts. Any leftover "enc:" values the frontend sends
+        // back are still decrypted here, before validation.
+        $middleware->api(prepend: [
+            \Modules\Core\Http\Middleware\DecryptApiRequest::class,
         ]);
 
         $middleware->redirectGuestsTo('/admin/login');
