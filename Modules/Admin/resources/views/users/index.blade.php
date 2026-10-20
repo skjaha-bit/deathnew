@@ -43,7 +43,6 @@
                         <th>Customer</th>
                         <th>Status</th>
                         <th>Plan</th>
-                        <th>Relatives</th>
                         <th>Registered</th>
                         <th></th>
                     </tr>
@@ -66,13 +65,12 @@
                             </td>
                             <td><span class="badge bg-{{ $user->status === 'active' ? 'success' : ($user->status === 'suspended' ? 'warning' : 'secondary') }}">{{ ucfirst($user->status) }}</span></td>
                             <td>{{ $user->subscription?->plan?->name ?? '—' }}</td>
-                            <td><span class="text-muted"><i class="bi bi-people me-1"></i>{{ $user->relatives_count }}</span></td>
                             <td class="text-muted">{{ $user->created_at->format('M j, Y') }}</td>
                             <td class="text-end"><a href="{{ route('admin.users.show', $user) }}" class="btn btn-sm btn-outline-primary">View<i class="bi bi-arrow-right"></i></a></td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center text-muted py-5">
+                            <td colspan="5" class="text-center text-muted py-5">
                                 <i class="bi bi-people d-block mb-2" style="font-size:1.6rem;opacity:.5"></i>
                                 No customers found.
                             </td>

@@ -6,9 +6,8 @@
     @include('admin::components.page-header', ['title' => $user->name, 'subtitle' => $user->email])
 
     <div class="row g-3 mb-3">
-        <div class="col-md-4">@include('admin::components.stat-card', ['label' => 'Profile completion', 'value' => $overview['completion_percent'].'%', 'icon' => 'bi-clipboard-check'])</div>
-        <div class="col-md-4">@include('admin::components.stat-card', ['label' => 'Relatives declared', 'value' => $user->relatives->count(), 'icon' => 'bi-person-hearts'])</div>
-        <div class="col-md-4">@include('admin::components.stat-card', ['label' => 'Account status', 'value' => ucfirst($user->status), 'icon' => 'bi-shield-check'])</div>
+        <div class="col-md-6">@include('admin::components.stat-card', ['label' => 'Profile completion', 'value' => $overview['completion_percent'].'%', 'icon' => 'bi-clipboard-check'])</div>
+        <div class="col-md-6">@include('admin::components.stat-card', ['label' => 'Account status', 'value' => ucfirst($user->status), 'icon' => 'bi-shield-check'])</div>
     </div>
 
     <div class="row g-3">
@@ -101,21 +100,6 @@
                         </tbody>
                     </table>
                 @endif
-            </div>
-
-            <div class="card p-3">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h6 class="mb-0">Relatives</h6>
-                    <a href="{{ route('admin.relatives.index') }}?search={{ urlencode($user->email) }}" class="small">View in Relatives &rarr;</a>
-                </div>
-                @forelse ($user->relatives as $relative)
-                    <div class="d-flex justify-content-between align-items-center small mb-2">
-                        <span>{{ $relative->name }} <span class="text-muted">({{ $relative->relation ?? 'relative' }})</span></span>
-                        <span class="badge bg-{{ $relative->invite_status === 'accepted' ? 'success' : 'secondary' }}">{{ ucfirst($relative->invite_status) }}</span>
-                    </div>
-                @empty
-                    <p class="text-muted mb-0 small">No relatives declared yet.</p>
-                @endforelse
             </div>
         </div>
     </div>

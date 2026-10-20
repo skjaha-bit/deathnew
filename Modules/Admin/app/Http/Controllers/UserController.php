@@ -15,9 +15,9 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $users = User::query()
+            ->whereDoesntHave('roles', fn ($q) => $q->whereIn('name', self::ADMIN_TIER_ROLES))
             ->when($request->filled('search'), fn ($q) => $q->search($request->query('search')))
             ->when($request->filled('status'), fn ($q) => $q->where('status', $request->query('status')))
-            ->withCount('relatives')
             ->with('subscription.plan')
             ->latest()
             ->paginate(20)
@@ -28,7 +28,7 @@ class UserController extends Controller
 
     public function show(User $user, OverviewService $overviewService)
     {
-        $user->load(['roles', 'relatives', 'subscription.plan', 'userSubscriptions.subscriptionType']);
+        $user->load(['roles', 'subscription.plan', 'userSubscriptions.subscriptionType']);
 
         $overview = $overviewService->getDashboard($user->id);
 
