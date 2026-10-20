@@ -299,7 +299,6 @@
     $navGroups = [
         'Customer Management' => [
             ['route' => 'admin.users.index', 'match' => 'admin.users.*', 'icon' => 'bi-people', 'label' => 'Customers', 'can' => 'manage-users'],
-            ['route' => 'admin.relatives.index', 'match' => 'admin.relatives.*', 'icon' => 'bi-person-hearts', 'label' => 'Relatives', 'can' => 'manage-users'],
         ],
         'Users & Access' => [
             ['route' => 'admin.admin-users.index', 'match' => 'admin.admin-users.*', 'icon' => 'bi-person-badge', 'label' => 'Admin Users', 'can' => 'manage-admins'],
@@ -321,26 +320,11 @@
             ['route' => 'admin.funeral-service-types.index', 'match' => 'admin.funeral-service-types.*', 'icon' => 'bi-flag', 'label' => 'Funeral Service Types', 'can' => 'manage-reference-data'],
         ],
         'CMS Management' => [
-            ['route' => 'admin.banners.index', 'match' => 'admin.banners.*', 'icon' => 'bi-image', 'label' => 'Banners', 'can' => 'manage-content'],
             ['route' => 'admin.cms-contents.index', 'match' => 'admin.cms-contents.*', 'icon' => 'bi-file-earmark-text', 'label' => 'CMS Content', 'can' => 'manage-content'],
         ],
-        'Language Management' => [
-            ['route' => 'admin.languages.index', 'match' => 'admin.languages.*', 'icon' => 'bi-translate', 'label' => 'Languages', 'can' => 'manage-settings'],
-            ['route' => 'admin.translations.index', 'match' => 'admin.translations.*', 'icon' => 'bi-chat-square-text', 'label' => 'Translations', 'can' => 'manage-settings'],
-        ],
-        'Commerce' => [
-            ['route' => 'admin.subscription-plans.index', 'match' => 'admin.subscription-plans.*', 'icon' => 'bi-credit-card', 'label' => 'Subscription Plans', 'can' => 'manage-subscriptions'],
-            ['route' => 'admin.subscription-types.index', 'match' => 'admin.subscription-types.*', 'icon' => 'bi-tags', 'label' => 'Subscription Types', 'can' => 'manage-subscriptions'],
-        ],
-        'Vault & Emergency Access' => [
-            ['route' => 'admin.emergency-access.index', 'match' => 'admin.emergency-access.*', 'icon' => 'bi-shield-lock-fill', 'label' => 'Emergency Access', 'can' => 'request-emergency-access'],
-            ['route' => 'admin.death-reports.index', 'match' => 'admin.death-reports.*', 'icon' => 'bi-file-earmark-medical', 'label' => 'Deceased Reports', 'can' => 'mark-user-deceased'],
-        ],
         'System' => [
-            ['route' => 'admin.notifications.index', 'match' => 'admin.notifications.*', 'icon' => 'bi-bell', 'label' => 'Notifications', 'can' => 'send-notifications'],
             ['route' => 'admin.settings.index', 'match' => 'admin.settings.*', 'icon' => 'bi-gear', 'label' => 'Settings', 'can' => 'manage-settings'],
             ['route' => 'admin.activity-logs.index', 'match' => 'admin.activity-logs.*', 'icon' => 'bi-clock-history', 'label' => 'Activity Logs', 'can' => 'view-activity-logs'],
-            ['route' => 'admin.reports.index', 'match' => 'admin.reports.*', 'icon' => 'bi-graph-up', 'label' => 'Reports', 'can' => 'view-reports'],
         ],
     ];
 
