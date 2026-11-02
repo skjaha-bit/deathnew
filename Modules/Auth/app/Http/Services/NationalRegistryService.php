@@ -31,8 +31,8 @@ class NationalRegistryService
 
     private const PHONE_KEYS = ['phoneNumber', 'phone', 'mobile', 'mobileNumber', 'mobilePhone'];
 
-    /** Gender isn't in the documented NameAddress response, so it is only filled when the flow adds it. */
-    private const GENDER_KEYS = ['gender', 'sex', 'kyn'];
+    /** Taktikal sends Registers Iceland's numeric `genderCode`; the other keys are kept in case a flow adds them. */
+    private const GENDER_KEYS = ['genderCode', 'gender', 'sex', 'kyn'];
 
     /**
      * @return array{valid: bool, deceased: bool, deceased_at: ?string, data: array}
@@ -48,7 +48,8 @@ class NationalRegistryService
                 ->acceptJson()
                 ->timeout(15)
                 ->get(rtrim(config('services.taktikal.url'), '/').'/nationalRegistry', [
-                    'lookupType' => 'NameAddress',
+                    // Richest lookup the account allows; NameAddress plus family details.
+                    'lookupType' => 'NameAddressFamily',
                     'flowKey' => config('services.taktikal.flow_key'),
                     'ssn' => $ssn,
                 ]);
@@ -185,8 +186,9 @@ class NationalRegistryService
     {
         return match (mb_strtolower(trim((string) $gender))) {
             '' => null,
-            'm', 'male', 'karl', 'kk' => 'male',
-            'f', 'female', 'kona', 'kvk' => 'female',
+            // Registers Iceland codes: 1 and 3 are male, 2 and 4 female.
+            '1', '3', 'm', 'male', 'karl', 'kk' => 'male',
+            '2', '4', 'f', 'female', 'kona', 'kvk' => 'female',
             default => 'other',
         };
     }
