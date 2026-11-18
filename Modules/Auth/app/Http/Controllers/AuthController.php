@@ -14,7 +14,7 @@ use Modules\Auth\Http\Requests\UpdateProfileRequest;
 use Modules\Auth\Http\Services\AuthService;
 use Modules\Auth\Models\UserEmail;
 use Modules\Auth\Models\UserPhone;
-use Modules\Core\Traits\ApiResponse;
+use Modules\Core\Traits\ApiResponse; 
 
 class AuthController extends Controller
 {
