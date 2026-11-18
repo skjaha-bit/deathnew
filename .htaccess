@@ -1,0 +1,30 @@
+# The Laravel project root sits inside the web root (served as /backend).
+# Only public/ may be reachable from the browser; everything else
+# (.env, .git, .claude, storage/, vendor/, config/, composer.json, ...) is denied.
+
+Options -Indexes -MultiViews
+
+# Fail closed: if mod_rewrite is missing, deny everything rather than expose the project.
+<IfModule !mod_rewrite.c>
+    Require all denied
+</IfModule>
+
+# Never serve dotfiles or dot-directories (.env, .git, .claude, .vscode, .user.ini, ...)
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Block any path segment that starts with a dot (e.g. /.git/config, /.claude/x)
+    RewriteRule (^|/)\. - [F,L]
+
+    # Requests already pointing into public/ are handled by public/.htaccess
+    RewriteRule ^public/ - [L]
+
+    # Route everything else into public/ so files outside it are unreachable.
+    # e.g. /backend/storage/x -> public/storage/x (the public disk symlink),
+    #      /backend/.env, /backend/composer.json -> public/... (404 / Laravel)
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
